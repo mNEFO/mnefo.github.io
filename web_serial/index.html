@@ -6,26 +6,32 @@
 </head>
 <body>
   <h1>テスト</h1>
+  <button id="openBtn">接続する</button>
+  <pre id="log"></pre>
+
   <script>
-    const port = await navigator.serial.requestPort();
-await port.open({ baudRate: 115200 }); // USB CDCなのでボーレート指定はダミーで機能します
+    const openBtn = document.getElementById('openBtn');
+    const log = document.getElementById('log');
 
-// 受信ストリーム（テキストデコード ＋ 改行分割）
-const textDecoder = new TextDecoderStream();
-const readableStreamClosed = port.readable.pipeTo(textDecoder.writable);
-const reader = textDecoder.readable
-  .pipeThrough(new TransformStream(new LineBreakTransformer()))
-  .getReader();
+    openBtn.addEventListener('click', async () => {
+      try {
+        // ポート選択画面を表示
+        const port = await navigator.serial.requestPort();
+        // 9600bpsで接続
+        await port.open({ baudRate: 9600 });
 
-// 受信ループ
-while (true) {
-  const { value, done } = await reader.read();
-  if (done) break;
-  if (value) {
-    const response = JSON.parse(value);
-    console.log("RP2350からの応答:", response);
-  }
-}
+        const reader = port.readable.getReader();
+        while (true) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          // 受信したデータを文字に変換して表示
+          const text = new TextDecoder().decode(value);
+          log.textContent += text;
+        }
+      } catch (error) {
+        console.error('エラー:', error);
+      }
+    });
   </script>
 </body>
 </html>
