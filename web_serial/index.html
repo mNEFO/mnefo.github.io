@@ -1,1 +1,46 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+  <meta charset="UTF-8">
+  <title>Web Serial 実験</title>
+</head>
+<body>
+  <button id="connect">接続する</button>
+  <pre id="log"></pre>
+
+  <script>
+    const connectBtn = document.getElementById('connect');
+    const logArea = document.getElementById('log');
+
+    connectBtn.addEventListener('click', async () => {
+      try {
+        // 1. ポートを選ぶ
+        const port = await navigator.serial.requestPort();
+        // 2. 接続を開く (通信速度はデバイスに合わせる)
+        await port.open({ baudRate: 9600 });
+
+        // 3. データを受け取る準備
+        while (port.readable) {
+          const reader = port.readable.getReader();
+          try {
+            while (true) {
+              const { value, done } = await reader.read();
+              if (done) break;
+              // データを文字にして画面に出す
+              const text = new TextDecoder().decode(value);
+              logArea.textContent += text;
+            }
+          } catch (error) {
+            console.error(error);
+          } finally {
+            reader.releaseLock();
+          }
+        }
+      } catch (error) {
+        alert('接続に失敗しました: ' + error);
+      }
+    });
+  </script>
+</body>
+</html>
 
