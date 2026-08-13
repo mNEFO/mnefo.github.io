@@ -215,6 +215,7 @@ async function sendJsonCommand(jsonObject) {
     if (!writer) return;
     const jsonString = JSON.stringify(jsonObject) + "\n";
     await writer.write(jsonString);
+    appendLog(jsonString);
 }
 
 
