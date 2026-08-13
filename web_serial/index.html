@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="ja">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -8,7 +9,8 @@
         :root {
             --bg-color: #121212;
             --card-bg: #1e1e1e;
-            --accent-color: #ff6b00; /* ニキシー管風オレンジ */
+            --accent-color: #ff6b00;
+            /* ニキシー管風オレンジ */
             --text-color: #e0e0e0;
             --border-color: #333;
         }
@@ -145,145 +147,151 @@
         .status-dot.connected {
             background-color: #00cc66;
         }
-.toggle-row {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    padding: 8px 0;
-}
 
-/* トグルスイッチの台座 */
-.switch {
-    position: relative;
-    display: inline-block;
-    width: 46px;
-    height: 24px;
-}
+        .toggle-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 8px 0;
+        }
 
-.switch input {
-    opacity: 0;
-    width: 0;
-    height: 0;
-}
+        /* トグルスイッチの台座 */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
 
-/* スライダー本体 */
-.slider {
-    position: absolute;
-    cursor: pointer;
-    top: 0; left: 0; right: 0; bottom: 0;
-    background-color: #444;
-    transition: .3s;
-    border-radius: 24px;
-}
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
 
-.slider:before {
-    position: absolute;
-    content: "";
-    height: 18px;
-    width: 18px;
-    left: 3px;
-    bottom: 3px;
-    background-color: white;
-    transition: .3s;
-    border-radius: 50%;
-}
+        /* スライダー本体 */
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #444;
+            transition: .3s;
+            border-radius: 24px;
+        }
 
-/* ONの時の色 (ニキシーオレンジ) */
-input:checked + .slider {
-    background-color: #ff6b00;
-}
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
 
-input:checked + .slider:before {
-    transform: translateX(22px);
-}
+        /* ONの時の色 (ニキシーオレンジ) */
+        input:checked+.slider {
+            background-color: #ff6b00;
+        }
 
-/* 無効（未接続）時 */
-input:disabled + .slider {
-    opacity: 0.4;
-    cursor: not-allowed;
-}
+        input:checked+.slider:before {
+            transform: translateX(22px);
+        }
+
+        /* 無効（未接続）時 */
+        input:disabled+.slider {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
     </style>
 </head>
+
 <body>
 
-<div class="container">
-    <header>
-        <h1><span id="status-dot" class="status-dot"></span>RP2350 Nixie Control</h1>
-        <div>
-            <button id="btn-connect">時計に接続</button>
-            <button id="btn-sync-time" disabled>PC時刻と同期</button>
-        </div>
-    </header>
+    <div class="container">
+        <header>
+            <h1><span id="status-dot" class="status-dot"></span>RP2350 Nixie Control</h1>
+            <div>
+                <button id="btn-connect">時計に接続</button>
+                <button id="btn-sync-time" disabled>PC時刻と同期</button>
+            </div>
+        </header>
 
-    <!-- テレメトリ（センサー情報）表示 -->
-    <div class="grid">
-        <div class="card">
-            <h2>SHT40 温湿度</h2>
-            <p class="sensor-val"><span id="val-temp">--.-</span> <span class="unit">°C</span></p>
-            <p class="sensor-val"><span id="val-hum">--.-</span> <span class="unit">%</span></p>
-        </div>
+        <!-- テレメトリ（センサー情報）表示 -->
+        <div class="grid">
+            <div class="card">
+                <h2>SHT40 温湿度</h2>
+                <p class="sensor-val"><span id="val-temp">--.-</span> <span class="unit">°C</span></p>
+                <p class="sensor-val"><span id="val-hum">--.-</span> <span class="unit">%</span></p>
+            </div>
 
-        <div class="card">
-            <h2>LPS22 気圧</h2>
-            <p class="sensor-val"><span id="val-press">----.-</span> <span class="unit">hPa</span></p>
-        </div>
+            <div class="card">
+                <h2>LPS22 気圧</h2>
+                <p class="sensor-val"><span id="val-press">----.-</span> <span class="unit">hPa</span></p>
+            </div>
 
-        <div class="card">
-            <h2>環境照度 (L / R)</h2>
-            <p class="sensor-val"><span id="val-ls-l">--</span> / <span id="val-ls-r">--</span></p>
+            <div class="card">
+                <h2>環境照度 (L / R)</h2>
+                <p class="sensor-val"><span id="val-ls-l">--</span> / <span id="val-ls-r">--</span></p>
+            </div>
         </div>
-    </div>
-<div class="grid">
-<div class="card">
-    <h2>機能 ON/OFF</h2>
-    <div class="control-group">
-        <div class="toggle-row">
-            <span>GPS 自動時刻同期</span>
-            <label class="switch">
-                <input type="checkbox" id="toggle-gps" disabled>
-                <span class="slider"></span>
-            </label>
+        <div class="grid">
+            <div class="card">
+                <h2>機能 ON/OFF</h2>
+                <div class="control-group">
+                    <div class="toggle-row">
+                        <span>GPS 自動時刻同期</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-gps" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
         </div>
-    </div>
-</div>
-</div>
-    <!-- コントロール操作 -->
-    <div class="grid">
-        <div class="card">
-            <h2>表示モード切替</h2>
-            <div class="control-group">
-                <select id="select-mode" disabled>
-                    <option value="clock">時刻表示</option>
-                    <option value="date">日付表示</option>
-                    <option value="thp">温度湿度気圧表示</option>
-                    <option value="dm">計測モード</option>
-                    <option value="test">テストモード</option>
-                </select>
-                <button id="btn-set-mode" disabled>モード変更を送信</button>
+        <!-- コントロール操作 -->
+        <div class="grid">
+            <div class="card">
+                <h2>表示モード切替</h2>
+                <div class="control-group">
+                    <select id="select-mode" disabled>
+                        <option value="clock">時刻表示</option>
+                        <option value="date">日付表示</option>
+                        <option value="thp">温度湿度気圧表示</option>
+                        <option value="dm">計測モード</option>
+                        <option value="test">テストモード</option>
+                    </select>
+                    <button id="btn-set-mode" disabled>モード変更を送信</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>輝度調整</h2>
+                <div class="control-group">
+                    <label for="range-brightness">輝度: <span id="val-brightness-disp">20</span></label>
+                    <input type="range" id="range-brightness" min="1" max="50" value="20" disabled>
+                </div>
             </div>
         </div>
 
+        <!-- システムログ領域 -->
         <div class="card">
-            <h2>輝度調整</h2>
-            <div class="control-group">
-                <label for="range-brightness">輝度: <span id="val-brightness-disp">20</span></label>
-                <input type="range" id="range-brightness" min="1" max="50" value="20" disabled>
-            </div>
+            <h2>システムログ</h2>
+            <div id="log-console">接続ボタンを押してRP2350を選択してください...<br /></div>
+        </div>
+        <div class="card">
+            <h2>Board ID</h2>
+            <p class="sensor-val"><span id="val-board-id">----------------</span></p>
         </div>
     </div>
 
-    <!-- システムログ領域 -->
-    <div class="card">
-        <h2>システムログ</h2>
-        <div id="log-console">接続ボタンを押してRP2350を選択してください...<br /></div>
-    </div>
-    <div class="card">
-        <h2>Board ID</h2>
-        <p class="sensor-val"><span id="val-board-id">----------------</span></p>
-    </div>
-</div>
-
-<!-- JavaScriptの読み込み -->
-<script src="app.js"></script>
+    <!-- JavaScriptの読み込み -->
+    <script src="app.js"></script>
 </body>
+
 </html>

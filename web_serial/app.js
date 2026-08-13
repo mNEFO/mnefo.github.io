@@ -19,7 +19,7 @@ const valBrightnessDisp = document.getElementById('val-brightness-disp');
 const statusDot = document.getElementById('status-dot');
 const logConsole = document.getElementById('log-console');
 
-// センサー表示用エレメント
+// センサー表示用エレメント element
 const valTemp = document.getElementById('val-temp');
 const valHum = document.getElementById('val-hum');
 const valPress = document.getElementById('val-press');
