@@ -25,6 +25,7 @@ const valHum = document.getElementById('val-hum');
 const valPress = document.getElementById('val-press');
 const valLsL = document.getElementById('val-ls-l');
 const valLsR = document.getElementById('val-ls-r');
+const valBoardId = document.getElementById('val-board-id');
 
 // ==========================================
 // イベントリスナーの登録
@@ -186,7 +187,7 @@ function parseReceivedJson(jsonString) {
                     valLsR.textContent = data.ls.right;
                 }
                 if (data.board_id) {
-                    document.getElementById('val-board-id').textContent = data.board_id;
+                    valBoardId.textContent = data.board_id;
                 }
                 break;
 
