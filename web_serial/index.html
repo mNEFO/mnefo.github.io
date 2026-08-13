@@ -3,14 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>RP2350B Nixie Clock Control</title>
-</head>
-<body>
-  <h1>テスト</h1>
-  <button id="openBtn">接続する</button>
-  <pre id="log"></pre>
-
   <script>
     const openBtn = document.getElementById('openBtn');
+    const closeBtn = document.getElementById('closeBtn');
     const log = document.getElementById('log');
 
     openBtn.addEventListener('click', async () => {
@@ -33,6 +28,13 @@
       }
     });
   </script>
+</head>
+<body>
+  <h1>テスト</h1>
+  <button id="openBtn">接続</button>
+  <button id="closeBtn">切断</button><br />
+  <button id="openBtn">接続</button>
+  <pre id="log"></pre>
 </body>
 </html>
 
