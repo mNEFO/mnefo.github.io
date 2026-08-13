@@ -206,7 +206,7 @@ function parseReceivedJson(jsonString) {
         }
     } catch (e) {
         // JSON以外の生の文字列が流れてきた場合はそのままログに出す
-        appendLog(`[Raw Serial] ${jsonString}`);
+        appendLog(`[RCV Raw Serial] ${jsonString}`);
     }
 }
 
@@ -215,7 +215,7 @@ async function sendJsonCommand(jsonObject) {
     if (!writer) return;
     const jsonString = JSON.stringify(jsonObject) + "\n";
     await writer.write(jsonString);
-    appendLog(jsonString);
+    appendLog(`[SEND Raw Serial] ${jsonString}`);
 }
 
 
