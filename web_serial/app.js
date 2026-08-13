@@ -26,6 +26,7 @@ const valPress = document.getElementById('val-press');
 const valLsL = document.getElementById('val-ls-l');
 const valLsR = document.getElementById('val-ls-r');
 const valBoardId = document.getElementById('val-board-id');
+const toggleGps = document.getElementById('toggle-gps');
 
 // ==========================================
 // イベントリスナーの登録
@@ -76,6 +77,23 @@ rangeBrightness.addEventListener('input', () => {
     valBrightnessDisp.textContent = rangeBrightness.value;
 });
 
+// トグル切り替えイベント
+toggleGps.addEventListener('change', () => {
+    const isEnabled = toggleGps.checked;
+    
+    sendJsonCommand({
+        cmd: "SET_GPS",
+        enabled: isEnabled
+    });
+    
+    appendLog(`[送信] GPS同期機能: ${isEnabled ? "ON" : "OFF"}`);
+});
+
+// 接続/切断時のUI活性化制御（setConnectedState内に追記）
+function setConnectedState(connected) {
+    // ... 既存の処理 ...
+    toggleGps.disabled = !connected;
+}
 
 // ==========================================
 // Web Serial 通信処理
