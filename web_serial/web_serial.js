@@ -15,6 +15,7 @@ async function connectToSerialPort() {
   }
 }
 
+const logEl = document.getElementById('log');
 while (port.readable) {
   reader = port.readable.getReader();
   try {
