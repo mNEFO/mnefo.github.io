@@ -253,6 +253,11 @@ function setConnectedState(connected) {
     selectMode.disabled = !connected;
     rangeBrightness.disabled = !connected;
 
+    const toggleGps = document.getElementById('toggle-gps');
+    if (toggleGps) {
+        toggleGps.disabled = !connected;
+    }
+    
     if (connected) {
         statusDot.classList.add('connected');
     } else {
