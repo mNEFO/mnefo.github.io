@@ -185,6 +185,9 @@ function parseReceivedJson(jsonString) {
                     valLsL.textContent = data.ls.left;
                     valLsR.textContent = data.ls.right;
                 }
+                if (data.board_id) {
+                    document.getElementById('val-board-id').textContent = data.board_id;
+                }
                 break;
 
             case "log":
