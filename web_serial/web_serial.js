@@ -15,6 +15,20 @@ async function connectToSerialPort() {
   }
 }
 
+        while (port.readable) {
+          reader = port.readable.getReader();
+          try {
+            while (true) {
+              const { value, done } = await reader.read();
+              if (done) break;
+              logEl.textContent += new TextDecoder().decode(value);
+            }
+          } catch (error) {
+            console.error(error);
+          } finally {
+            reader.releaseLock();
+          }
+
 // 安全な実装例
 document.getElementById("connectButton").addEventListener("click", async () => {
   // まずユーザーアクティベーションが有効な間にAPIを呼び出す
