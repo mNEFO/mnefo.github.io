@@ -188,7 +188,10 @@ function processBuffer() {
 function parseReceivedJson(jsonString) {
     try {
         const data = JSON.parse(jsonString);
-
+        if (data.features) {
+            // 時計側の現在の状態に合わせてスイッチの表示を更新（イベントを発火させずに状態だけ更新）
+            toggleGps.checked = data.features.gps;
+        }
         // typeフィールドで処理を分岐
         switch (data.type) {
             case "telemetry":
