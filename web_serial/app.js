@@ -213,7 +213,7 @@ function parseReceivedJson(jsonString) {
 // JSONコマンドをRP2350へ送信（末尾に改行コード \n を付与）
 async function sendJsonCommand(jsonObject) {
     if (!writer) return;
-    const jsonString = JSON.stringify(jsonObject) + "\n";
+    const jsonString = JSON.stringify(jsonObject);
     await writer.write(jsonString);
     appendLog(`[SEND Raw Serial] ${jsonString}`);
 }
