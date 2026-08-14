@@ -34,7 +34,7 @@
             align-items: center;
             border-bottom: 2px solid var(--border-color);
             padding-bottom: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         h1 {
@@ -67,7 +67,7 @@
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
             gap: 15px;
-            margin-bottom: 20px;
+            margin-bottom: 10px;
         }
 
         .card {
@@ -89,7 +89,7 @@
             font-size: 1rem;
             font-weight: bold;
             color: #fff;
-            margin: 10px 0 0 0;
+            margin: 5px 0 0 0;
         }
 
         .unit {
@@ -102,7 +102,7 @@
             display: flex;
             flex-direction: column;
             gap: 10px;
-            margin-top: 10px;
+            margin-top: 5px;
         }
 
         label {
@@ -205,6 +205,21 @@
 
         /* 無効（未接続）時 */
         input:disabled+.slider {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+        input[type="time"] {
+            background-color: #2a2a2a;
+            color: #fff;
+            border: 1px solid var(--border-color);
+            padding: 8px 12px;
+            border-radius: 4px;
+            font-size: 1rem;
+            color-scheme: dark;
+            /* カレンダー/時計ピッカーをダークモード化 */
+        }
+
+        input[type="time"]:disabled {
             opacity: 0.4;
             cursor: not-allowed;
         }
@@ -350,6 +365,14 @@
                         <option value="blink">左右</option>
                     </select>
                     <button id="btn-set-dot-mode" disabled>モード変更を送信</button>
+                </div>
+            </div>
+            <div class="card">
+                <h2>定時処理の実行時刻</h2>
+                <div class="control-group">
+                    <label for="input-schedule-time">設定時刻 (HH:MM):</label>
+                    <input type="time" id="input-schedule-time" value="03:00" disabled>
+                    <button id="btn-set-schedule" disabled>実行時刻を送信</button>
                 </div>
             </div>
         </div>

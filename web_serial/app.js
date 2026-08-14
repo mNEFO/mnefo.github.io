@@ -21,7 +21,7 @@ const valBrightnessDisp = document.getElementById('val-brightness-disp');
 const statusDot = document.getElementById('status-dot');
 const logConsole = document.getElementById('log-console');
 
-// センサー表示用エレメント
+// ニキシー管時計の状態
 const valTemp = document.getElementById('val-temp');
 const valHum = document.getElementById('val-hum');
 const valPress = document.getElementById('val-press');
@@ -35,6 +35,8 @@ const toggleXfade = document.getElementById('toggle-xfade');
 const toggleAP = document.getElementById('toggle-ap');
 const selectTimezone = document.getElementById('select-timezone');
 const btnSetTimezone = document.getElementById('btn-set-timezone');
+const inputScheduleTime = document.getElementById('input-schedule-time');
+const btnSetSchedule = document.getElementById('btn-set-schedule');
 
 // ==========================================
 // イベントリスナーの登録
@@ -160,6 +162,23 @@ btnSetTimezone.addEventListener('click', () => {
     appendLog(`[送信] タイムゾーン設定: UTC${tzOffset >= 0 ? '+' : ''}${tzOffset}`);
 });
 
+btnSetSchedule.addEventListener('click', () => {
+    const timeVal = inputScheduleTime.value; // "HH:MM" 形式 (例: "03:00")
+    if (!timeVal) return;
+
+    const [hourStr, minStr] = timeVal.split(':');
+    const hour = parseInt(hourStr, 10);
+    const min = parseInt(minStr, 10);
+
+    sendJsonCommand({
+        cmd: "SET_SCHEDULE",
+        hour: hour,
+        min: min
+    });
+
+    appendLog(`[送信] 定時実行時刻設定: ${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`);
+});
+
 // ==========================================
 // Web Serial 通信処理
 // ==========================================
@@ -264,6 +283,11 @@ function parseReceivedJson(jsonString) {
         if (data.tz !== undefined) {
             selectTimezone.value = data.tz.toString();
         }
+        if (data.schedule) {
+            const h = String(data.schedule.hour).padStart(2, '0');
+            const m = String(data.schedule.min).padStart(2, '0');
+            inputScheduleTime.value = `${h}:${m}`;
+        }
         // typeフィールドで処理を分岐
         switch (data.type) {
             case "telemetry":
@@ -282,7 +306,7 @@ function parseReceivedJson(jsonString) {
                 if (data.board_id) {
                     valBoardId.textContent = data.board_id;
                 }
-                if (data.tz){
+                if (data.tz) {
                     selectTimezone.value = data.tz.toString();
                 }
                 if (data.mode) {
@@ -367,6 +391,8 @@ function setConnectedState(connected) {
     if (btnSetDotMode) btnSetDotMode.disabled = !connected;
     if (selectMode) selectMode.disabled = !connected;
     if (btnSetMode) btnSetMode.disabled = !connected;
+    if (inputScheduleTime) inputScheduleTime.disabled = !connected;
+    if (btnSetSchedule) btnSetSchedule.disabled = !connected;
 
     if (connected) {
         statusDot.classList.add('connected');
