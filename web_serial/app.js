@@ -31,6 +31,8 @@ const toggleSensor = document.getElementById('toggle-sensor');
 const toggleDark = document.getElementById('toggle-dark');
 const toggleXfade = document.getElementById('toggle-xfade');
 const toggleAP = document.getElementById('toggle-ap');
+const selectTimezone = document.getElementById('select-timezone');
+const btnSetTimezone = document.getElementById('btn-set-timezone');
 
 // ==========================================
 // イベントリスナーの登録
@@ -137,11 +139,14 @@ toggleAP.addEventListener('change', () => {
     appendLog(`[送信] アンチポイズニング: ${isEnabled ? "ON" : "OFF"}`);
 });
 
-// 接続/切断時のUI活性化制御（setConnectedState内に追記）
-function setConnectedState(connected) {
-    // ... 既存の処理 ...
-    toggleGps.disabled = !connected;
-}
+btnSetTimezone.addEventListener('click', () => {
+    const tzOffset = parseInt(selectTimezone.value, 10);
+    sendJsonCommand({
+        cmd: "SET_TZ",
+        offset: tzOffset
+    });
+    appendLog(`[送信] タイムゾーン設定: UTC${tzOffset >= 0 ? '+' : ''}${tzOffset}`);
+});
 
 // ==========================================
 // Web Serial 通信処理
@@ -244,6 +249,9 @@ function parseReceivedJson(jsonString) {
             toggleXfade.checked = data.features.xfade;
             toggleAP.checked = data.features.ap;
         }
+        if (data.tz !== undefined) {
+            selectTimezone.value = data.tz.toString();
+        }
         // typeフィールドで処理を分岐
         switch (data.type) {
             case "telemetry":
@@ -279,7 +287,7 @@ function parseReceivedJson(jsonString) {
         }
     } catch (e) {
         // JSON以外の生の文字列が流れてきた場合はそのままログに出す
-        appendLog(`[RCV Raw Serial] ${jsonString}`);
+        appendLog(`[RECV Raw Serial] ${jsonString}`);
     }
 }
 
@@ -329,6 +337,9 @@ function setConnectedState(connected) {
     if (toggleAP) {
         toggleAP.disabled = !connected;
     }
+
+    if (selectTimezone) selectTimezone.disabled = !connected;
+    if (btnSetTimezone) btnSetTimezone.disabled = !connected;
 
     if (connected) {
         statusDot.classList.add('connected');
