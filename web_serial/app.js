@@ -29,8 +29,8 @@ const valBoardId = document.getElementById('val-board-id');
 const toggleGps = document.getElementById('toggle-gps');
 const toggleSensor = document.getElementById('toggle-sensor');
 const toggleDark = document.getElementById('toggle-dark');
-const toggleXfade = document.getElementById('toggle-Xfade');
-const toggleAP = document.getElementById('toggle-AP');
+const toggleXfade = document.getElementById('toggle-xfade');
+const toggleAP = document.getElementById('toggle-ap');
 
 // ==========================================
 // イベントリスナーの登録
