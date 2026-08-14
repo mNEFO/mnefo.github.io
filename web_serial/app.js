@@ -14,6 +14,8 @@ const btnConnect = document.getElementById('btn-connect');
 const btnSyncTime = document.getElementById('btn-sync-time');
 const btnSetMode = document.getElementById('btn-set-mode');
 const selectMode = document.getElementById('select-mode');
+const btnSetDotMode = document.getElementById('btn-set-dot-mode');
+const selectDotMode = document.getElementById('select-dot-mode');
 const rangeBrightness = document.getElementById('range-brightness');
 const valBrightnessDisp = document.getElementById('val-brightness-disp');
 const statusDot = document.getElementById('status-dot');
@@ -66,6 +68,16 @@ btnSetMode.addEventListener('click', () => {
         mode: selectedMode
     });
     appendLog(`[送信] 表示モード設定: ${selectedMode}`);
+});
+
+// dot mode変更ボタン
+btnSetDotMode.addEventListener('click', () => {
+    const selectedMode = selectDotMode.value;
+    sendJsonCommand({
+        cmd: "SET_DOT_MODE",
+        mode: selectedMode
+    });
+    appendLog(`[送信] ドットモード設定: ${selectedMode}`);
 });
 
 // 輝度スライダーの変更イベント
@@ -270,6 +282,15 @@ function parseReceivedJson(jsonString) {
                 if (data.board_id) {
                     valBoardId.textContent = data.board_id;
                 }
+                if (data.tz){
+                    selectTimezone.value = data.tz.toString();
+                }
+                if (data.mode) {
+                    selectMode.value = data.mode;
+                }
+                if (data.dot_mode) {
+                    selectDotMode.value = data.dot_mode;
+                }
                 break;
 
             case "log":
@@ -312,6 +333,8 @@ function setConnectedState(connected) {
     btnSetMode.disabled = !connected;
     selectMode.disabled = !connected;
     rangeBrightness.disabled = !connected;
+    btnSetDotMode.disabled = !connected;
+    selectDotMode.disabled = !connected;
 
     const toggleGps = document.getElementById('toggle-gps');
     if (toggleGps) {
@@ -340,6 +363,10 @@ function setConnectedState(connected) {
 
     if (selectTimezone) selectTimezone.disabled = !connected;
     if (btnSetTimezone) btnSetTimezone.disabled = !connected;
+    if (selectDotMode) selectDotMode.disabled = !connected;
+    if (btnSetDotMode) btnSetDotMode.disabled = !connected;
+    if (selectMode) selectMode.disabled = !connected;
+    if (btnSetMode) btnSetMode.disabled = !connected;
 
     if (connected) {
         statusDot.classList.add('connected');

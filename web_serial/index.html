@@ -300,7 +300,6 @@
             <div class="card">
                 <h2>タイムゾーン設定</h2>
                 <div class="control-group">
-                    <label for="select-timezone">UTCオフセット:</label>
                     <select id="select-timezone" disabled>
                         <option value="-12">UTC-12:00 (ベーカー島)</option>
                         <option value="-11">UTC-11:00 (サモア)</option>
@@ -341,7 +340,19 @@
                 </div>
             </div>
         </div>
-
+        <div class="grid">
+            <div class="card">
+                <h2>ドットモード切替</h2>
+                <div class="control-group">
+                    <select id="select-dot-mode" disabled>
+                        <option value="right">右</option>
+                        <option value="left">左</option>
+                        <option value="blink">左右</option>
+                    </select>
+                    <button id="btn-set-dot-mode" disabled>モード変更を送信</button>
+                </div>
+            </div>
+        </div>
         <!-- システムログ領域 -->
         <div class="card">
             <h2>システムログ</h2>
