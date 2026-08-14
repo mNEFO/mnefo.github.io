@@ -101,7 +101,7 @@
         .control-group {
             display: flex;
             flex-direction: column;
-            gap: 10px;
+            gap: 5px;
             margin-top: 5px;
         }
 
@@ -208,6 +208,7 @@
             opacity: 0.4;
             cursor: not-allowed;
         }
+
         input[type="time"] {
             background-color: #2a2a2a;
             color: #fff;
@@ -368,11 +369,17 @@
                 </div>
             </div>
             <div class="card">
-                <h2>定時処理の実行時刻</h2>
+                <h2>アンチポイズニングの実行時刻</h2>
                 <div class="control-group">
                     <label for="input-schedule-time">設定時刻 (HH:MM):</label>
                     <input type="time" id="input-schedule-time" value="03:00" disabled>
                     <button id="btn-set-schedule" disabled>実行時刻を送信</button>
+                </div>
+            </div>
+            <div class="card">
+                <h2></h2>
+                <div class="control-group">
+                    <label for=""></label>
                 </div>
             </div>
         </div>
