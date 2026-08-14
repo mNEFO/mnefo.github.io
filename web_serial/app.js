@@ -239,10 +239,10 @@ function parseReceivedJson(jsonString) {
         if (data.features) {
             // 時計側の現在の状態に合わせてスイッチの表示を更新（イベントを発火させずに状態だけ更新）
             toggleGps.checked = data.features.gps;
-            toggleGps.checked = data.features.sensor;
-            toggleGps.checked = data.features.dark;
-            toggleGps.checked = data.features.xfade;
-            toggleGps.checked = data.features.ap;
+            toggleSensor.checked = data.features.sensor;
+            toggleDark.checked = data.features.dark;
+            toggleXfade.checked = data.features.xfade;
+            toggleAP.checked = data.features.ap;
         }
         // typeフィールドで処理を分岐
         switch (data.type) {
