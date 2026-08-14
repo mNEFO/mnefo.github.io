@@ -27,6 +27,10 @@ const valLsL = document.getElementById('val-ls-l');
 const valLsR = document.getElementById('val-ls-r');
 const valBoardId = document.getElementById('val-board-id');
 const toggleGps = document.getElementById('toggle-gps');
+const toggleSensor = document.getElementById('toggle-sensor');
+const toggleDark = document.getElementById('toggle-dark');
+const toggleXfade = document.getElementById('toggle-Xfade');
+const toggleAP = document.getElementById('toggle-AP');
 
 // ==========================================
 // イベントリスナーの登録
@@ -80,13 +84,57 @@ rangeBrightness.addEventListener('input', () => {
 // トグル切り替えイベント
 toggleGps.addEventListener('change', () => {
     const isEnabled = toggleGps.checked;
-    
+
     sendJsonCommand({
         cmd: "SET_GPS",
         enabled: isEnabled
     });
-    
+
     appendLog(`[送信] GPS同期機能: ${isEnabled ? "ON" : "OFF"}`);
+});
+
+toggleSensor.addEventListener('change', () => {
+    const isEnabled = toggleSensor.checked;
+
+    sendJsonCommand({
+        cmd: "SET_SENSOR",
+        enabled: isEnabled
+    });
+
+    appendLog(`[送信] センサー有効: ${isEnabled ? "ON" : "OFF"}`);
+});
+
+toggleDark.addEventListener('change', () => {
+    const isEnabled = toggleDark.checked;
+
+    sendJsonCommand({
+        cmd: "SET_DARK",
+        enabled: isEnabled
+    });
+
+    appendLog(`[送信] 消灯機能: ${isEnabled ? "ON" : "OFF"}`);
+});
+
+toggleXfade.addEventListener('change', () => {
+    const isEnabled = toggleXfade.checked;
+
+    sendJsonCommand({
+        cmd: "SET_XFADE",
+        enabled: isEnabled
+    });
+
+    appendLog(`[送信] クロスフェード: ${isEnabled ? "ON" : "OFF"}`);
+});
+
+toggleAP.addEventListener('change', () => {
+    const isEnabled = toggleAP.checked;
+
+    sendJsonCommand({
+        cmd: "SET_AP",
+        enabled: isEnabled
+    });
+
+    appendLog(`[送信] アンチポイズニング: ${isEnabled ? "ON" : "OFF"}`);
 });
 
 // 接続/切断時のUI活性化制御（setConnectedState内に追記）
@@ -191,6 +239,10 @@ function parseReceivedJson(jsonString) {
         if (data.features) {
             // 時計側の現在の状態に合わせてスイッチの表示を更新（イベントを発火させずに状態だけ更新）
             toggleGps.checked = data.features.gps;
+            toggleGps.checked = data.features.sensor;
+            toggleGps.checked = data.features.dark;
+            toggleGps.checked = data.features.xfade;
+            toggleGps.checked = data.features.ap;
         }
         // typeフィールドで処理を分岐
         switch (data.type) {
@@ -257,7 +309,27 @@ function setConnectedState(connected) {
     if (toggleGps) {
         toggleGps.disabled = !connected;
     }
-    
+
+    const toggleSensor = document.getElementById('toggle-sensor');
+    if (toggleSensor) {
+        toggleSensor.disabled = !connected;
+    }
+
+    const toggleDark = document.getElementById('toggle-dark');
+    if (toggleDark) {
+        toggleDark.disabled = !connected;
+    }
+
+    const toggleXfade = document.getElementById('toggle-xfade');
+    if (toggleXfade) {
+        toggleXfade.disabled = !connected;
+    }
+
+    const toggleAP = document.getElementById('toggle-ap');
+    if (toggleAP) {
+        toggleAP.disabled = !connected;
+    }
+
     if (connected) {
         statusDot.classList.add('connected');
     } else {
