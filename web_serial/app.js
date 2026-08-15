@@ -91,7 +91,7 @@ rangeBrightness.addEventListener('change', () => {
         cmd: "SET_BRIGHTNESS",
         val: brightnessVal
     });
-    appendLog(`[送信] 輝度変更: ${brightnessVal}%`);
+    appendLog(`[送信] 輝度変更: ${brightnessVal}`);
 });
 
 // 輝度スライダーの数値表示リアルタイム更新
