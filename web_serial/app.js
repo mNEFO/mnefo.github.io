@@ -191,9 +191,9 @@ btnSetDefault.addEventListener('click', () => {
 if ("serial" in navigator) {
     navigator.serial.addEventListener('disconnect', (event) => {
         if (event.target === port) {
+            resetUiToDefault();
             appendLog("[システム] USBデバイスが物理的に取り外されました。");
             disconnectSerial();
-            resetUiToDefault();
         }
     });
 }
