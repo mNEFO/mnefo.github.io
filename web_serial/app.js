@@ -272,26 +272,13 @@ function processBuffer() {
 function parseReceivedJson(jsonString) {
     try {
         const data = JSON.parse(jsonString);
-        if (data.features) {
-            // 時計側の現在の状態に合わせてスイッチの表示を更新（イベントを発火させずに状態だけ更新）
-            toggleGps.checked = data.features.gps;
-            toggleSensor.checked = data.features.sensor;
-            toggleDark.checked = data.features.dark;
-            toggleXfade.checked = data.features.xfade;
-            toggleAP.checked = data.features.ap;
-        }
-        if (data.tz !== undefined) {
-            selectTimezone.value = data.tz.toString();
-        }
-        if (data.schedule) {
-            const h = String(data.schedule.hour).padStart(2, '0');
-            const m = String(data.schedule.min).padStart(2, '0');
-            inputScheduleTime.value = `${h}:${m}`;
-        }
         // typeフィールドで処理を分岐
         switch (data.type) {
             case "telemetry":
                 // センサー値の更新
+                if (data.tz !== undefined) {
+                    selectTimezone.value = data.tz.toString();
+                }
                 if (data.sht40) {
                     valTemp.textContent = data.sht40.temp.toFixed(1);
                     valHum.textContent = data.sht40.hum.toFixed(1);
@@ -314,6 +301,18 @@ function parseReceivedJson(jsonString) {
                 }
                 if (data.dot_mode) {
                     selectDotMode.value = data.dot_mode;
+                }
+                if (data.schedule) {
+                    const h = String(data.schedule.hour).padStart(2, '0');
+                    const m = String(data.schedule.min).padStart(2, '0');
+                    inputScheduleTime.value = `${h}:${m}`;
+                }
+                if (data.features) {
+                    toggleGps.checked = data.features.gps;
+                    toggleSensor.checked = data.features.sensor;
+                    toggleDark.checked = data.features.dark;
+                    toggleXfade.checked = data.features.xfade;
+                    toggleAP.checked = data.features.ap;
                 }
                 break;
 
