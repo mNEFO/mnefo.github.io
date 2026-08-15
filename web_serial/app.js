@@ -193,6 +193,7 @@ if ("serial" in navigator) {
         if (event.target === port) {
             appendLog("[システム] USBデバイスが物理的に取り外されました。");
             disconnectSerial();
+            resetUiToDefault();
         }
     });
 }
