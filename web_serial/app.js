@@ -38,6 +38,7 @@ const btnSetTimezone = document.getElementById('btn-set-timezone');
 const inputScheduleTime = document.getElementById('input-schedule-time');
 const btnSetSchedule = document.getElementById('btn-set-schedule');
 const btnSetDefault = document.getElementById('btn-set-default');
+const btnSetDm = document.getElementById('btn-set-dm');
 
 // ==========================================
 // イベントリスナーの登録
@@ -185,6 +186,13 @@ btnSetDefault.addEventListener('click', () => {
         cmd: "SET_DEFAULT"
     });
     appendLog(`[送信] デフォルト設定を適用`);
+});
+
+btnSetDm.addEventListener('click', () => {
+    sendJsonCommand({
+        cmd: "SET_DM"
+    });
+    appendLog(`[送信] 測定を開始`);
 });
 
 // USBケーブルが物理的に抜かれた場合の自動処理
