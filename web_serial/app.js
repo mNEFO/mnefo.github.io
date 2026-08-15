@@ -420,6 +420,7 @@ function setConnectedState(connected) {
     if (inputScheduleTime) inputScheduleTime.disabled = !connected;
     if (btnSetSchedule) btnSetSchedule.disabled = !connected;
     if (btnSetDefault) btnSetDefault.disabled = !connected;
+    if (btnSetDm) btnSetDm.disabled = !connected;
 
     if (connected) {
         statusDot.classList.add('connected');
