@@ -231,6 +231,9 @@ async function connectSerial() {
         // 接続状態の更新
         setConnectedState(true);
         appendLog("[システム] シリアルポートに接続しました。");
+        sendJsonCommand({
+            cmd: "CONNECTED",
+        });
 
         // 受信ループの開始
         readLoop();
@@ -367,7 +370,7 @@ async function sendJsonCommand(jsonObject) {
     if (!writer) return;
     const jsonString = JSON.stringify(jsonObject) + "\n";
     await writer.write(jsonString);
-    appendLog(`[SEND Raw Serial] ${jsonString}`);
+    // appendLog(`[SEND Raw Serial] ${jsonString}`);
 }
 
 
