@@ -37,6 +37,7 @@ const selectTimezone = document.getElementById('select-timezone');
 const btnSetTimezone = document.getElementById('btn-set-timezone');
 const inputScheduleTime = document.getElementById('input-schedule-time');
 const btnSetSchedule = document.getElementById('btn-set-schedule');
+const btnSetDefault = document.getElementById('btn-set-default');
 
 // ==========================================
 // イベントリスナーの登録
@@ -177,6 +178,13 @@ btnSetSchedule.addEventListener('click', () => {
     });
 
     appendLog(`[送信] 定時実行時刻設定: ${String(hour).padStart(2, '0')}:${String(min).padStart(2, '0')}`);
+});
+
+btnSetDefault.addEventListener('click', () => {
+    sendJsonCommand({
+        cmd: "SET_DEFAULT"
+    });
+    appendLog(`[送信] デフォルト設定を適用`);
 });
 
 // ==========================================
@@ -392,6 +400,7 @@ function setConnectedState(connected) {
     if (btnSetMode) btnSetMode.disabled = !connected;
     if (inputScheduleTime) inputScheduleTime.disabled = !connected;
     if (btnSetSchedule) btnSetSchedule.disabled = !connected;
+    if (btnSetDefault) btnSetDefault.disabled = !connected;
 
     if (connected) {
         statusDot.classList.add('connected');
