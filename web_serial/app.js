@@ -187,6 +187,16 @@ btnSetDefault.addEventListener('click', () => {
     appendLog(`[送信] デフォルト設定を適用`);
 });
 
+// USBケーブルが物理的に抜かれた場合の自動処理
+if ("serial" in navigator) {
+    navigator.serial.addEventListener('disconnect', (event) => {
+        if (event.target === port) {
+            appendLog("[システム] USBデバイスが物理的に取り外されました。");
+            disconnectSerial();
+        }
+    });
+}
+
 // ==========================================
 // Web Serial 通信処理
 // ==========================================
@@ -406,6 +416,7 @@ function setConnectedState(connected) {
         statusDot.classList.add('connected');
     } else {
         statusDot.classList.remove('connected');
+        resetUiToDefault();
     }
 }
 
@@ -415,4 +426,38 @@ function appendLog(message) {
     logConsole.textContent += `[${now}] ${message}\n`;
     // 常に最下部へ自動スライド
     logConsole.scrollTop = logConsole.scrollHeight;
+}
+
+// 切断時に表示をデフォルト状態へ戻す関数
+function resetUiToDefault() {
+    // センサー表示を初期化
+    if (valTemp) valTemp.textContent = "--.-";
+    if (valHum) valHum.textContent = "--.-";
+    if (valPress) valPress.textContent = "----.-";
+    if (valLsL) valLsL.textContent = "--";
+    if (valLsR) valLsR.textContent = "--";
+
+    // Board ID などの初期化（要素がある場合）
+    const valBoardId = document.getElementById('val-board-id');
+    if (valBoardId) valBoardId.textContent = "----------------";
+
+    // コントロール類の値を初期値に戻したい場合（任意）
+    if (selectMode) selectMode.value = "clock";
+    if (selectTimezone) selectTimezone.value = "9";
+    if (rangeBrightness) {
+        rangeBrightness.value = 20;
+        if (valBrightnessDisp) valBrightnessDisp.textContent = "20";
+    }
+    if (selectDotMode) selectDotMode.value = "right";
+    if (inputScheduleTime) inputScheduleTime.value = "03:00";
+    const toggleGps = document.getElementById('toggle-gps');
+    if (toggleGps) toggleGps.checked = false;
+    const toggleSensor = document.getElementById('toggle-sensor');
+    if (toggleSensor) toggleSensor.checked = false;
+    const toggleDark = document.getElementById('toggle-dark');
+    if (toggleDark) toggleDark.checked = false;
+    const toggleXfade = document.getElementById('toggle-xfade');
+    if (toggleXfade) toggleXfade.checked = false;
+    const toggleAP = document.getElementById('toggle-ap');
+    if (toggleAP) toggleAP.checked = false;
 }
