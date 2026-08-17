@@ -45,7 +45,7 @@ const btnSetDm = document.getElementById('btn-set-dm');
 // イベントリスナーの登録
 // ==========================================
 
-// Web Serial接続・切断ボタン
+// Web Serial接続/切断ボタン
 btnConnect.addEventListener('click', async () => {
     if (isConnected) {
         await disconnectSerial();
