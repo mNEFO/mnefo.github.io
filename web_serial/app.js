@@ -28,6 +28,7 @@ const valPress = document.getElementById('val-press');
 const valLsL = document.getElementById('val-ls-l');
 const valLsR = document.getElementById('val-ls-r');
 const valBoardId = document.getElementById('val-board-id');
+const valBoardTemp = document.getElementById('val-board-temp');
 const toggleGps = document.getElementById('toggle-gps');
 const toggleSensor = document.getElementById('toggle-sensor');
 const toggleDark = document.getElementById('toggle-dark');
@@ -323,6 +324,9 @@ function parseReceivedJson(jsonString) {
                 if (data.board_id) {
                     valBoardId.textContent = data.board_id;
                 }
+                if (data.picotemp) {
+                    valBoardTemp.textContent = data.picotemp.toFixed(1);
+                }
                 if (data.tz) {
                     selectTimezone.value = data.tz.toString();
                 }
@@ -453,6 +457,7 @@ function resetUiToDefault() {
     // Board ID などの初期化（要素がある場合）
     const valBoardId = document.getElementById('val-board-id');
     if (valBoardId) valBoardId.textContent = "----------------";
+    if (valBoardTemp) valBoardTemp.textContent = "--.-"
 
     // コントロール類の値を初期値に戻したい場合（任意）
     if (selectMode) selectMode.value = "clock";
