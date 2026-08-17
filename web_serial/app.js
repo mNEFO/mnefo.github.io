@@ -324,8 +324,8 @@ function parseReceivedJson(jsonString) {
                 if (data.board_id) {
                     valBoardId.textContent = data.board_id;
                 }
-                if (data.picotemp) {
-                    valBoardTemp.textContent = data.picotemp.toFixed(1);
+                if (data.pico_temp) {
+                    valBoardTemp.textContent = data.pico_temp.toFixed(1);
                 }
                 if (data.tz) {
                     selectTimezone.value = data.tz.toString();
