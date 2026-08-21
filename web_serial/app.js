@@ -40,6 +40,8 @@ const inputScheduleTime = document.getElementById('input-schedule-time');
 const btnSetSchedule = document.getElementById('btn-set-schedule');
 const btnSetDefault = document.getElementById('btn-set-default');
 const btnSetDm = document.getElementById('btn-set-dm');
+const inputCustomVal = document.getElementById('input-custom-val');
+const btnSetCustomVal = document.getElementById('btn-set-custom-val');
 
 // ==========================================
 // イベントリスナーの登録
@@ -194,6 +196,24 @@ btnSetDm.addEventListener('click', () => {
         cmd: "SET_DM"
     });
     appendLog(`[送信] 測定を開始`);
+});
+
+btnSetCustomVal.addEventListener('click', () => {
+    const rawVal = inputCustomVal.value;
+    const numVal = parseFloat(rawVal);
+
+    // バリデーション（数値であること & 0 〜 9.9999999 の範囲内）
+    if (isNaN(numVal) || numVal < 0 || numVal > 9.9999999) {
+        alert("0.0000000 〜 9.9999999 の範囲で入力してください。");
+        return;
+    }
+
+    sendJsonCommand({
+        cmd: "SET_VALUE",
+        val: numVal
+    });
+
+    appendLog(`[送信] パラメータ設定: ${numVal.toFixed(7)}`);
 });
 
 // USBケーブルが物理的に抜かれた場合の自動処理
@@ -428,6 +448,8 @@ function setConnectedState(connected) {
     if (btnSetSchedule) btnSetSchedule.disabled = !connected;
     if (btnSetDefault) btnSetDefault.disabled = !connected;
     if (btnSetDm) btnSetDm.disabled = !connected;
+    if (inputCustomVal) inputCustomVal.disabled = !connected;
+    if (btnSetCustomVal) btnSetCustomVal.disabled = !connected;
 
     if (connected) {
         statusDot.classList.add('connected');
@@ -468,6 +490,7 @@ function resetUiToDefault() {
     }
     if (selectDotMode) selectDotMode.value = "right";
     if (inputScheduleTime) inputScheduleTime.value = "03:00";
+    if (inputCustomVal) inputCustomVal.value = "1.0000000";
     const toggleGps = document.getElementById('toggle-gps');
     if (toggleGps) toggleGps.checked = false;
     const toggleSensor = document.getElementById('toggle-sensor');
