@@ -330,6 +330,10 @@ function parseReceivedJson(jsonString) {
                 if (data.tz !== undefined) {
                     selectTimezone.value = data.tz.toString();
                 }
+                if (data.brightness){
+                    valBrightnessDisp.value = data.brightness;
+                    rangeBrightness.value = data.brightness;
+                }
                 if (data.sht40) {
                     valTemp.textContent = data.sht40.temp.toFixed(1);
                     valHum.textContent = data.sht40.hum.toFixed(1);
@@ -486,7 +490,7 @@ function resetUiToDefault() {
     if (selectTimezone) selectTimezone.value = "9";
     if (rangeBrightness) {
         rangeBrightness.value = 20;
-        if (valBrightnessDisp) valBrightnessDisp.textContent = "20";
+        if (valBrightnessDisp) valBrightnessDisp.textContent = "25";
     }
     if (selectDotMode) selectDotMode.value = "right";
     if (inputScheduleTime) inputScheduleTime.value = "03:00";
