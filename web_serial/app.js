@@ -331,7 +331,7 @@ function parseReceivedJson(jsonString) {
                     selectTimezone.value = data.tz.toString();
                 }
                 if (data.brightness){
-                    valBrightnessDisp.value = data.brightness;
+                    valBrightnessDisp.textContent = data.brightness;
                     rangeBrightness.value = data.brightness;
                 }
                 if (data.sht40) {
