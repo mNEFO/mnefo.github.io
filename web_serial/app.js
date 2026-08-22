@@ -203,8 +203,8 @@ btnSetCustomVal.addEventListener('click', () => {
     const numVal = parseFloat(rawVal);
 
     // バリデーション（数値であること & 0 〜 9.9999999 の範囲内）
-    if (isNaN(numVal) || numVal < 0 || numVal > 9.9999999) {
-        alert("0.0000000 〜 9.9999999 の範囲で入力してください。");
+    if (isNaN(numVal) || numVal < 0 || numVal > 9.999999) {
+        alert("0.000000 〜 9.999999 の範囲で入力してください。");
         return;
     }
 
@@ -490,7 +490,7 @@ function resetUiToDefault() {
     }
     if (selectDotMode) selectDotMode.value = "right";
     if (inputScheduleTime) inputScheduleTime.value = "03:00";
-    if (inputCustomVal) inputCustomVal.value = "1.0000000";
+    if (inputCustomVal) inputCustomVal.value = "1.000000";
     const toggleGps = document.getElementById('toggle-gps');
     if (toggleGps) toggleGps.checked = false;
     const toggleSensor = document.getElementById('toggle-sensor');
