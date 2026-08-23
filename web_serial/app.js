@@ -33,6 +33,7 @@ const toggleGps = document.getElementById('toggle-gps');
 const toggleSensor = document.getElementById('toggle-sensor');
 const toggleDark = document.getElementById('toggle-dark');
 const toggleXfade = document.getElementById('toggle-xfade');
+const toggleRotate = document.getElementById('toggle-rotate');
 const toggleAP = document.getElementById('toggle-ap');
 const selectTimezone = document.getElementById('select-timezone');
 const btnSetTimezone = document.getElementById('btn-set-timezone');
@@ -145,6 +146,17 @@ toggleXfade.addEventListener('change', () => {
     });
 
     appendLog(`[送信] クロスフェード: ${isEnabled ? "ON" : "OFF"}`);
+});
+
+toggleRotate.addEventListener('change', () => {
+    const isEnabled = toggleRotate.checked;
+
+    sendJsonCommand({
+        cmd: "SET_ROTATE",
+        enabled: isEnabled
+    });
+
+    appendLog(`[送信] 回転: ${isEnabled ? "ON" : "OFF"}`);
 });
 
 toggleAP.addEventListener('change', () => {
@@ -370,6 +382,7 @@ function parseReceivedJson(jsonString) {
                     toggleSensor.checked = data.features.sensor;
                     toggleDark.checked = data.features.dark;
                     toggleXfade.checked = data.features.xfade;
+                    toggleRotate.checked = data.features.rotate;
                     toggleAP.checked = data.features.ap;
                 }
                 break;
@@ -435,6 +448,11 @@ function setConnectedState(connected) {
     const toggleXfade = document.getElementById('toggle-xfade');
     if (toggleXfade) {
         toggleXfade.disabled = !connected;
+    }
+
+    const toggleRotate = document.getElementById('toggle-rotate');
+    if (toggleRotate) {
+        toggleRotate.disabled = !connected;
     }
 
     const toggleAP = document.getElementById('toggle-ap');
@@ -503,6 +521,8 @@ function resetUiToDefault() {
     if (toggleDark) toggleDark.checked = false;
     const toggleXfade = document.getElementById('toggle-xfade');
     if (toggleXfade) toggleXfade.checked = false;
+    const toggleRotate = document.getElementById('toggle-rotate');
+    if (toggleRotate) toggleRotate.checked = false;
     const toggleAP = document.getElementById('toggle-ap');
     if (toggleAP) toggleAP.checked = false;
 }
