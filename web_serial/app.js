@@ -527,11 +527,11 @@ function resetUiToDefault() {
     if (selectMode) selectMode.value = "clock";
     if (selectTimezone) selectTimezone.value = "9";
     if (rangeBrightness) {
-        rangeBrightness.value = 20;
-        if (valBrightnessDisp) valBrightnessDisp.textContent = "6";
+        rangeBrightness.value = 25;
+        if (valBrightnessDisp) valBrightnessDisp.textContent = "25";
     }
     if (rangeSensorTH) {
-        rangeSensorTH.value = 25;
+        rangeSensorTH.value = 6;
         if (valSensorTHDisp) valSensorTHDisp.textContent = "6";
     }
     if (selectDotMode) selectDotMode.value = "right";
