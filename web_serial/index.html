@@ -238,26 +238,6 @@
                 <button id="btn-sync-time" disabled>PC時刻と同期</button>
             </div>
         </header>
-
-        <!-- テレメトリ（センサー情報）表示 -->
-        <div class="grid">
-            <div class="card">
-                <h2>SHT40 温湿度</h2>
-                <p class="sensor-val"><span id="val-temp">--.-</span> <span class="unit">°C</span>
-                    <span id="val-hum">--.-</span> <span class="unit">%</span>
-                </p>
-            </div>
-
-            <div class="card">
-                <h2>LPS22 気圧</h2>
-                <p class="sensor-val"><span id="val-press">----.-</span> <span class="unit">hPa</span></p>
-            </div>
-
-            <div class="card">
-                <h2>環境照度 (L / R)</h2>
-                <p class="sensor-val"><span id="val-ls-l">--</span> / <span id="val-ls-r">--</span></p>
-            </div>
-        </div>
         <div class="grid">
             <div class="card">
                 <h2>機能 ON/OFF</h2>
@@ -276,35 +256,10 @@
                             <span class="slider"></span>
                         </label>
                     </div>
-
                     <div class="toggle-row">
                         <span>消灯機能（光センサー有効時）</span>
                         <label class="switch">
                             <input type="checkbox" id="toggle-dark" disabled>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-row">
-                        <span>クロスフェード</span>
-                        <label class="switch">
-                            <input type="checkbox" id="toggle-xfade" disabled>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-row">
-                        <span>回転</span>
-                        <label class="switch">
-                            <input type="checkbox" id="toggle-rotate" disabled>
-                            <span class="slider"></span>
-                        </label>
-                    </div>
-
-                    <div class="toggle-row">
-                        <span>アンチポイズニング</span>
-                        <label class="switch">
-                            <input type="checkbox" id="toggle-ap" disabled>
                             <span class="slider"></span>
                         </label>
                     </div>
@@ -327,8 +282,33 @@
                 <p class="sensor-val"><span id="val-ls-l">--</span> / <span id="val-ls-r">--</span></p>
             </div>
         </div>
-        <!-- コントロール操作 -->
         <div class="grid">
+            <div class="card">
+                <div class="control-group">
+                    <div class="toggle-row">
+                        <span>クロスフェード</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-xfade" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-row">
+                        <span>回転</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-rotate" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                    <div class="toggle-row">
+                        <span>アンチポイズニング</span>
+                        <label class="switch">
+                            <input type="checkbox" id="toggle-ap" disabled>
+                            <span class="slider"></span>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
             <div class="card">
                 <h2>表示モード切替</h2>
                 <div class="control-group">
@@ -387,6 +367,7 @@
                 </div>
             </div>
         </div>
+        
         <div class="grid">
             <div class="card">
                 <h2>ドットモード切替</h2>
