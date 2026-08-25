@@ -18,10 +18,10 @@ const btnSetDotMode = document.getElementById('btn-set-dot-mode');
 const selectDotMode = document.getElementById('select-dot-mode');
 const rangeBrightness = document.getElementById('range-brightness');
 const valBrightnessDisp = document.getElementById('val-brightness-disp');
+const rangeSensorTH = document.getElementById('range-sensor-th');
+const valSensorTHDisp = document.getElementById('val-sensor-th-disp');
 const statusDot = document.getElementById('status-dot');
 const logConsole = document.getElementById('log-console');
-
-// ニキシー管時計の状態
 const valTemp = document.getElementById('val-temp');
 const valHum = document.getElementById('val-hum');
 const valPress = document.getElementById('val-press');
@@ -101,6 +101,21 @@ rangeBrightness.addEventListener('change', () => {
 // 輝度スライダーの数値表示リアルタイム更新
 rangeBrightness.addEventListener('input', () => {
     valBrightnessDisp.textContent = rangeBrightness.value;
+});
+
+// センサー感度スライダーの変更イベント
+rangeSensorTH.addEventListener('change', () => {
+    const sensorTHVal = parseInt(rangeSensorTH.value, 10);
+    sendJsonCommand({
+        cmd: "SET_SENSOR_TH",
+        val: sensorTHVal
+    });
+    appendLog(`[送信] センサー感度変更: ${sensorTHVal}`);
+});
+
+// センサー感度スライダーの数値表示リアルタイム更新
+rangeSensorTH.addEventListener('input', () => {
+    valSensorTHDisp.textContent = rangeSensorTH.value;
 });
 
 // トグル切り替えイベント
@@ -342,9 +357,13 @@ function parseReceivedJson(jsonString) {
                 if (data.tz !== undefined) {
                     selectTimezone.value = data.tz.toString();
                 }
-                if (data.brightness){
+                if (data.brightness) {
                     valBrightnessDisp.textContent = data.brightness;
                     rangeBrightness.value = data.brightness;
+                }
+                if (data.sensor_th) {
+                    valSensorTHDisp.textContent = data.sensor_th;
+                    rangeSensorTH.value = data.sensor_th;
                 }
                 if (data.sht40) {
                     valTemp.textContent = data.sht40.temp.toFixed(1);
@@ -427,6 +446,7 @@ function setConnectedState(connected) {
     btnSetMode.disabled = !connected;
     selectMode.disabled = !connected;
     rangeBrightness.disabled = !connected;
+    rangeSensorTH.disabled = !connected;
     btnSetDotMode.disabled = !connected;
     selectDotMode.disabled = !connected;
 
@@ -508,7 +528,11 @@ function resetUiToDefault() {
     if (selectTimezone) selectTimezone.value = "9";
     if (rangeBrightness) {
         rangeBrightness.value = 20;
-        if (valBrightnessDisp) valBrightnessDisp.textContent = "25";
+        if (valBrightnessDisp) valBrightnessDisp.textContent = "6";
+    }
+    if (rangeSensorTH) {
+        rangeSensorTH.value = 25;
+        if (valSensorTHDisp) valSensorTHDisp.textContent = "6";
     }
     if (selectDotMode) selectDotMode.value = "right";
     if (inputScheduleTime) inputScheduleTime.value = "03:00";

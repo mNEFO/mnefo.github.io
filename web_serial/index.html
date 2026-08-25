@@ -257,7 +257,7 @@
                         </label>
                     </div>
                     <div class="toggle-row">
-                        <span>消灯機能（光センサー有効時）</span>
+                        <span>消灯機能<br />（光センサー有効時）</span>
                         <label class="switch">
                             <input type="checkbox" id="toggle-dark" disabled>
                             <span class="slider"></span>
@@ -360,15 +360,23 @@
             </div>
 
             <div class="card">
+                <h2>センサー感度</h2>
+                <div class="control-group">
+                    <label for="range-sensor-th">感度: <span id="val-sensor-th-disp">6</span></label>
+                    <input type="range" id="range-sensor-th" min="1" max="50" value="6" disabled>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
+            <div class="card">
                 <h2>輝度調整</h2>
                 <div class="control-group">
                     <label for="range-brightness">輝度: <span id="val-brightness-disp">25</span></label>
                     <input type="range" id="range-brightness" min="1" max="50" value="25" disabled>
                 </div>
             </div>
-        </div>
-        
-        <div class="grid">
+
             <div class="card">
                 <h2>ドットモード切替</h2>
                 <div class="control-group">
