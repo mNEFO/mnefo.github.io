@@ -265,25 +265,9 @@
                     </div>
                 </div>
             </div>
-            <div class="card">
-                <h2>SHT40 温湿度</h2>
-                <p class="sensor-val"><span id="val-temp">--.-</span> <span class="unit">°C</span>
-                    <span id="val-hum">--.-</span> <span class="unit">%</span>
-                </p>
-            </div>
 
             <div class="card">
-                <h2>LPS22 気圧</h2>
-                <p class="sensor-val"><span id="val-press">----.-</span> <span class="unit">hPa</span></p>
-            </div>
-
-            <div class="card">
-                <h2>光センサー照度 (L / R)</h2>
-                <p class="sensor-val"><span id="val-ls-l">--</span> / <span id="val-ls-r">--</span></p>
-            </div>
-        </div>
-        <div class="grid">
-            <div class="card">
+                <h2>　　　</h2>
                 <div class="control-group">
                     <div class="toggle-row">
                         <span>クロスフェード</span>
@@ -310,6 +294,24 @@
             </div>
 
             <div class="card">
+                <h2>SHT40 温湿度</h2>
+                <p class="sensor-val"><span id="val-temp">--.-</span> <span class="unit">°C</span>
+                    <span id="val-hum">--.-</span> <span class="unit">%</span>
+                </p>
+            </div>
+
+            <div class="card">
+                <h2>LPS22 気圧</h2>
+                <p class="sensor-val"><span id="val-press">----.-</span> <span class="unit">hPa</span></p>
+            </div>
+        </div>
+        <div class="grid">
+            <div class="card">
+                <h2>光センサー照度 (L / R)</h2>
+                <p class="sensor-val"><span id="val-ls-l">--</span> / <span id="val-ls-r">--</span></p>
+            </div>
+
+            <div class="card">
                 <h2>表示モード切替</h2>
                 <div class="control-group">
                     <select id="select-mode" disabled>
@@ -320,6 +322,14 @@
                         <option value="test">テストモード</option>
                     </select>
                     <button id="btn-set-mode" disabled>モード変更を送信</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>光センサー感度<br />（感度より低いと暗くなる）</h2>
+                <div class="control-group">
+                    <label for="range-sensor-th">感度: <span id="val-sensor-th-disp">6</span></label>
+                    <input type="range" id="range-sensor-th" min="1" max="50" value="6" disabled>
                 </div>
             </div>
 
@@ -359,13 +369,6 @@
                 </div>
             </div>
 
-            <div class="card">
-                <h2>光センサー感度<br />（感度より低いと暗くなる）</h2>
-                <div class="control-group">
-                    <label for="range-sensor-th">感度: <span id="val-sensor-th-disp">6</span></label>
-                    <input type="range" id="range-sensor-th" min="1" max="50" value="6" disabled>
-                </div>
-            </div>
         </div>
 
         <div class="grid">
