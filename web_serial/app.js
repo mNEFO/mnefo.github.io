@@ -343,41 +343,41 @@ async function connectSerial() {
 }
 
 // シリアルポート切断関数
-// async function disconnectSerial() {
-//     if (reader) {
-//         await reader.cancel();
-//     }
-//     if (writer) {
-//         await writer.close();
-//     }
-//     if (port) {
-//         await port.close();
-//     }
-//     setConnectedState(false);
-//     appendLog("[システム] 切断しました。");
-// }
-async function disconnect() {
-    try {
-        if (reader) {
-            await reader.cancel();
-            await readableStreamClosed.catch(() => { });
-            reader = null;
-        }
-        if (writer) {
-            await writer.close();
-            await writableStreamClosed;
-            writer = null;
-        }
-        if (port) {
-            await port.close();
-            port = null;
-        }
-        setConnectedState(false);
-        appendLog("[システム] 切断しました。");
-    } catch (e) {
-        appendLog('Disconnect error:', e);
+async function disconnectSerial() {
+    if (reader) {
+        await reader.cancel();
     }
+    if (writer) {
+        await writer.close();
+    }
+    if (port) {
+        await port.close();
+    }
+    setConnectedState(false);
+    appendLog("[システム] 切断しました。");
 }
+// async function disconnect() {
+//     try {
+//         if (reader) {
+//             await reader.cancel();
+//             await readableStreamClosed.catch(() => { });
+//             reader = null;
+//         }
+//         if (writer) {
+//             await writer.close();
+//             await writableStreamClosed;
+//             writer = null;
+//         }
+//         if (port) {
+//             await port.close();
+//             port = null;
+//         }
+//         setConnectedState(false);
+//         appendLog("[システム] 切断しました。");
+//     } catch (e) {
+//         appendLog('Disconnect error:', e);
+//     }
+// }
 
 // データ受信ループ（バックグラウンドで常に回る）
 async function readLoop() {
