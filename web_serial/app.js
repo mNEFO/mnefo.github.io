@@ -372,6 +372,8 @@ async function disconnect() {
             await port.close();
             port = null;
         }
+        setConnectedState(false);
+        appendLog("[システム] 切断しました。");
     } catch (e) {
         appendLog('Disconnect error:', e);
     }
