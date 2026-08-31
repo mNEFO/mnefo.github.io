@@ -346,38 +346,21 @@ async function connectSerial() {
 async function disconnectSerial() {
     if (reader) {
         await reader.cancel();
+        await readableStreamClosed.catch(() => {});
+        reader = null;
     }
     if (writer) {
         await writer.close();
+        await writableStreamClosed;
+        writer = null;
     }
     if (port) {
         await port.close();
+        port = null;
     }
     setConnectedState(false);
     appendLog("[システム] 切断しました。");
 }
-// async function disconnect() {
-//     try {
-//         if (reader) {
-//             await reader.cancel();
-//             await readableStreamClosed.catch(() => { });
-//             reader = null;
-//         }
-//         if (writer) {
-//             await writer.close();
-//             await writableStreamClosed;
-//             writer = null;
-//         }
-//         if (port) {
-//             await port.close();
-//             port = null;
-//         }
-//         setConnectedState(false);
-//         appendLog("[システム] 切断しました。");
-//     } catch (e) {
-//         appendLog('Disconnect error:', e);
-//     }
-// }
 
 // データ受信ループ（バックグラウンドで常に回る）
 async function readLoop() {
