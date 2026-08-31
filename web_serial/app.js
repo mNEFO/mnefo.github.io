@@ -246,51 +246,51 @@ btnSetCustomVal.addEventListener('click', () => {
 
 // DFU mode
 btnDFU.addEventListener('click', async () => {
-  if (!port) return;
-  
-  if (!confirm('ファームウェアアップデートモードに移行しますか？\n接続が切断されます。')) return;
+    if (!port) return;
 
-  try {
-    // 1. 現在のポートを保持しておく
-    const targetPort = port;
-    
-    // 2. 現在の接続を完全に切断する（後述の重要ポイント）
-    await disconnect();
-    
-    // ポート解放待ち（OS側の処理待ち）
-    await new Promise(r => setTimeout(r, 500));
+    if (!confirm('ファームウェアアップデートモードに移行しますか？\n接続が切断されます。')) return;
 
-    // 3. 1200bpsでオープン (1200bps Touch)
-    appendLog('ブートローダ起動シーケンス: 1200bps Open');
-    
-    // タイミングによっては "The port is already open" になることがあるためリトライ処理を入れると親切
-    for (let i = 0; i < 3; i++) {
-      try {
-        await targetPort.open({ baudRate: 1200 });
-        break;
-      } catch (e) {
-        if (i === 2) throw e;
-        appendLog(`Open retry ${i+1}...`);
+    try {
+        // 1. 現在のポートを保持しておく
+        const targetPort = port;
+
+        // 2. 現在の接続を完全に切断する（後述の重要ポイント）
+        await disconnect();
+
+        // ポート解放待ち（OS側の処理待ち）
         await new Promise(r => setTimeout(r, 500));
-      }
+
+        // 3. 1200bpsでオープン (1200bps Touch)
+        appendLog('ブートローダ起動シーケンス: 1200bps Open');
+
+        // タイミングによっては "The port is already open" になることがあるためリトライ処理を入れると親切
+        for (let i = 0; i < 3; i++) {
+            try {
+                await targetPort.open({ baudRate: 1200 });
+                break;
+            } catch (e) {
+                if (i === 2) throw e;
+                appendLog(`Open retry ${i + 1}...`);
+                await new Promise(r => setTimeout(r, 500));
+            }
+        }
+
+        // 4. DTR信号の操作 (DTRをON→OFFすることでリセットトリガーとなる)
+        await targetPort.setSignals({ dataTerminalReady: true });
+        await new Promise(r => setTimeout(r, 200));
+        await targetPort.setSignals({ dataTerminalReady: false });
+
+        // 5. クローズしてリセット発動
+        await targetPort.close();
+
+        alert('デバイスをリセットしました。RPI-RP2ドライブに.uf2ファイルをコピーしてください。');
+        elBtnConnect.disabled = false;
+        elBtnFirmwareUpdate.disabled = true;
+
+    } catch (e) {
+        console.error(e);
+        alert('エラーが発生しました: ' + e.message);
     }
-
-    // 4. DTR信号の操作 (DTRをON→OFFすることでリセットトリガーとなる)
-    await targetPort.setSignals({ dataTerminalReady: true });
-    await new Promise(r => setTimeout(r, 200));
-    await targetPort.setSignals({ dataTerminalReady: false });
-
-    // 5. クローズしてリセット発動
-    await targetPort.close();
-    
-    alert('デバイスをリセットしました。RPI-RP2ドライブに.uf2ファイルをコピーしてください。');
-    elBtnConnect.disabled = false;
-    elBtnFirmwareUpdate.disabled = true;
-
-  } catch (e) {
-    console.error(e);
-    alert('エラーが発生しました: ' + e.message);
-  }
 });
 
 // USBケーブルが物理的に抜かれた場合の自動処理
@@ -343,20 +343,39 @@ async function connectSerial() {
 }
 
 // シリアルポート切断関数
-async function disconnectSerial() {
-    if (reader) {
-        await reader.cancel();
+// async function disconnectSerial() {
+//     if (reader) {
+//         await reader.cancel();
+//     }
+//     if (writer) {
+//         await writer.close();
+//     }
+//     if (port) {
+//         await port.close();
+//     }
+//     setConnectedState(false);
+//     appendLog("[システム] 切断しました。");
+// }
+async function disconnect() {
+    try {
+        if (reader) {
+            await reader.cancel();
+            await readableStreamClosed.catch(() => { });
+            reader = null;
+        }
+        if (writer) {
+            await writer.close();
+            await writableStreamClosed;
+            writer = null;
+        }
+        if (port) {
+            await port.close();
+            port = null;
+        }
+    } catch (e) {
+        appendLog('Disconnect error:', e);
     }
-    if (writer) {
-        await writer.close();
-    }
-    if (port) {
-        await port.close();
-    }
-    setConnectedState(false);
-    appendLog("[システム] 切断しました。");
 }
-
 
 // データ受信ループ（バックグラウンドで常に回る）
 async function readLoop() {
