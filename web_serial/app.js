@@ -29,6 +29,7 @@ const valLsL = document.getElementById('val-ls-l');
 const valLsR = document.getElementById('val-ls-r');
 const valBoardId = document.getElementById('val-board-id');
 const valBoardTemp = document.getElementById('val-board-temp');
+const valUptime = document.getElementById('val-uptime');
 const toggleGps = document.getElementById('toggle-gps');
 const toggleSensor = document.getElementById('toggle-sensor');
 const toggleDark = document.getElementById('toggle-dark');
@@ -346,7 +347,7 @@ async function connectSerial() {
 async function disconnectSerial() {
     if (reader) {
         await reader.cancel();
-        await readableStreamClosed.catch(() => {});
+        await readableStreamClosed.catch(() => { });
         reader = null;
     }
     if (writer) {
@@ -436,6 +437,13 @@ function parseReceivedJson(jsonString) {
                 }
                 if (data.pico_temp) {
                     valBoardTemp.textContent = data.pico_temp.toFixed(1);
+                }
+                if (data.uptime) {
+                    const days = Math.floor(data.uptime / 86400);
+                    const hours = Math.floor((data.uptime % 86400) / 3600);
+                    const minutes = Math.floor((data.uptime % 3600) / 60);
+                    const seconds = data.uptime % 60;
+                    valUptime.textContent = `${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
                 }
                 if (data.tz) {
                     selectTimezone.value = data.tz.toString();
