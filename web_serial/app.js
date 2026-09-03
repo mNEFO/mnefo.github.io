@@ -44,7 +44,7 @@ const btnSetDefault = document.getElementById('btn-set-default');
 const btnSetDm = document.getElementById('btn-set-dm');
 const inputCustomVal = document.getElementById('input-custom-val');
 const btnSetCustomVal = document.getElementById('btn-set-custom-val');
-const btnDFU = document.getElementById('btn-set-dfu');
+// const btnDFU = document.getElementById('btn-set-dfu');
 
 // ==========================================
 // イベントリスナーの登録
@@ -246,53 +246,53 @@ btnSetCustomVal.addEventListener('click', () => {
 });
 
 // DFU mode
-btnDFU.addEventListener('click', async () => {
-    if (!port) return;
+// btnDFU.addEventListener('click', async () => {
+//     if (!port) return;
 
-    if (!confirm('ファームウェアアップデートモードに移行しますか？\n接続が切断されます。')) return;
+//     if (!confirm('ファームウェアアップデートモードに移行しますか？\n接続が切断されます。')) return;
 
-    try {
-        // 1. 現在のポートを保持しておく
-        const targetPort = port;
+//     try {
+//         // 1. 現在のポートを保持しておく
+//         const targetPort = port;
 
-        // 2. 現在の接続を完全に切断する（後述の重要ポイント）
-        await disconnect();
+//         // 2. 現在の接続を完全に切断する（後述の重要ポイント）
+//         await disconnect();
 
-        // ポート解放待ち（OS側の処理待ち）
-        await new Promise(r => setTimeout(r, 500));
+//         // ポート解放待ち（OS側の処理待ち）
+//         await new Promise(r => setTimeout(r, 500));
 
-        // 3. 1200bpsでオープン (1200bps Touch)
-        appendLog('ブートローダ起動シーケンス: 1200bps Open');
+//         // 3. 1200bpsでオープン (1200bps Touch)
+//         appendLog('ブートローダ起動シーケンス: 1200bps Open');
 
-        // タイミングによっては "The port is already open" になることがあるためリトライ処理を入れると親切
-        for (let i = 0; i < 3; i++) {
-            try {
-                await targetPort.open({ baudRate: 1200 });
-                break;
-            } catch (e) {
-                if (i === 2) throw e;
-                appendLog(`Open retry ${i + 1}...`);
-                await new Promise(r => setTimeout(r, 500));
-            }
-        }
+//         // タイミングによっては "The port is already open" になることがあるためリトライ処理を入れると親切
+//         for (let i = 0; i < 3; i++) {
+//             try {
+//                 await targetPort.open({ baudRate: 1200 });
+//                 break;
+//             } catch (e) {
+//                 if (i === 2) throw e;
+//                 appendLog(`Open retry ${i + 1}...`);
+//                 await new Promise(r => setTimeout(r, 500));
+//             }
+//         }
 
-        // 4. DTR信号の操作 (DTRをON→OFFすることでリセットトリガーとなる)
-        await targetPort.setSignals({ dataTerminalReady: true });
-        await new Promise(r => setTimeout(r, 200));
-        await targetPort.setSignals({ dataTerminalReady: false });
+//         // 4. DTR信号の操作 (DTRをON→OFFすることでリセットトリガーとなる)
+//         await targetPort.setSignals({ dataTerminalReady: true });
+//         await new Promise(r => setTimeout(r, 200));
+//         await targetPort.setSignals({ dataTerminalReady: false });
 
-        // 5. クローズしてリセット発動
-        await targetPort.close();
+//         // 5. クローズしてリセット発動
+//         await targetPort.close();
 
-        alert('デバイスをリセットしました。RPI-RP2ドライブに.uf2ファイルをコピーしてください。');
-        elBtnConnect.disabled = false;
-        elBtnFirmwareUpdate.disabled = true;
+//         alert('デバイスをリセットしました。RPI-RP2ドライブに.uf2ファイルをコピーしてください。');
+//         elBtnConnect.disabled = false;
+//         elBtnFirmwareUpdate.disabled = true;
 
-    } catch (e) {
-        console.error(e);
-        alert('エラーが発生しました: ' + e.message);
-    }
-});
+//     } catch (e) {
+//         console.error(e);
+//         alert('エラーが発生しました: ' + e.message);
+//     }
+// });
 
 // USBケーブルが物理的に抜かれた場合の自動処理
 if ("serial" in navigator) {
@@ -512,7 +512,7 @@ function setConnectedState(connected) {
     rangeSensorTH.disabled = !connected;
     btnSetDotMode.disabled = !connected;
     selectDotMode.disabled = !connected;
-    btnDFU.disabled = !connected;
+    // btnDFU.disabled = !connected;
 
     const toggleGps = document.getElementById('toggle-gps');
     if (toggleGps) {
@@ -556,7 +556,7 @@ function setConnectedState(connected) {
     if (btnSetDm) btnSetDm.disabled = !connected;
     if (inputCustomVal) inputCustomVal.disabled = !connected;
     if (btnSetCustomVal) btnSetCustomVal.disabled = !connected;
-    if (btnDFU) btnDFU.disabled = !connected;
+    // if (btnDFU) btnDFU.disabled = !connected;
 
     if (connected) {
         statusDot.classList.add('connected');
