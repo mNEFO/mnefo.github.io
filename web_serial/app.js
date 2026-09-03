@@ -438,11 +438,11 @@ function parseReceivedJson(jsonString) {
                 if (data.pico_temp) {
                     valBoardTemp.textContent = data.pico_temp.toFixed(1);
                 }
-                if (data.uptime) {
-                    const days = Math.floor(data.uptime / 86400);
-                    const hours = Math.floor((data.uptime % 86400) / 3600);
-                    const minutes = Math.floor((data.uptime % 3600) / 60);
-                    const seconds = data.uptime % 60;
+                if (data.tuptime) {
+                    const days = Math.floor(data.tuptime / 86400);
+                    const hours = Math.floor((data.tuptime % 86400) / 3600);
+                    const minutes = Math.floor((data.tuptime % 3600) / 60);
+                    const seconds = data.tuptime % 60;
                     valUptime.textContent = `${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
                 }
                 if (data.tz) {
