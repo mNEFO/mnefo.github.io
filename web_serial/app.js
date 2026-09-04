@@ -428,11 +428,13 @@ function parseReceivedJson(jsonString) {
                     valBoardTemp.textContent = data.pico_temp.toFixed(1);
                 }
                 if (data.tuptime) {
+                    const years = Math.floor(data.tuptime / 31536000);
+                    const months = Math.floor((data.tuptime % 31536000) / 2592000);
                     const days = Math.floor(data.tuptime / 86400);
                     const hours = Math.floor((data.tuptime % 86400) / 3600);
                     const minutes = Math.floor((data.tuptime % 3600) / 60);
                     const seconds = data.tuptime % 60;
-                    valUptime.textContent = `${days}日 ${hours}時間 ${minutes}分 ${seconds}秒`;
+                    valUptime.textContent = `${years}年${months}ヶ月${days}日${hours}時間${minutes}分${seconds}秒`;
                 }
                 if (data.tz) {
                     selectTimezone.value = data.tz.toString();
@@ -603,4 +605,5 @@ function resetUiToDefault() {
     if (toggleRotate) toggleRotate.checked = false;
     const toggleAP = document.getElementById('toggle-ap');
     if (toggleAP) toggleAP.checked = false;
+    if (valUptime) valUptime.textContent = "--年--ヶ月--日--時間--分--秒";
 }
