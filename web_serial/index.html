@@ -383,18 +383,21 @@
                 <p class="sensor-val"><span id="val-temp">--.-</span> <span class="unit">°C</span>
                     <span id="val-hum">--.-</span> <span class="unit">%</span>
                 </p>
-                <h2>LPS22 気圧</h2>
-                <p class="sensor-val"><span id="val-press">----.-</span> <span class="unit">hPa</span></p>
             </div>
 
             <div class="card">
-                <h2>光センサー照度 (L / R)</h2>
-                <p class="sensor-val"><span id="val-ls-l">--</span> / <span id="val-ls-r">--</span></p>
+                <h2>LPS22 気圧</h2>
+                <p class="sensor-val"><span id="val-press">----.-</span> <span class="unit">hPa</span></p>
             </div>
 
         </div>
 
         <div class="grid">
+
+            <div class="card">
+                <h2>光センサー照度 (L / R)</h2>
+                <p class="sensor-val"><span id="val-ls-l">--</span> / <span id="val-ls-r">--</span></p>
+            </div>
 
             <div class="card">
                 <h2>光センサー感度<br />（感度より低いと暗くなる）</h2>
@@ -427,6 +430,10 @@
                 </div>
             </div>
 
+        </div>
+
+        <div class="grid">
+
             <div class="card">
                 <h2>ドットモード切替</h2>
                 <div class="control-group">
@@ -441,11 +448,7 @@
                 </div>
             </div>
 
-        </div>
-
-        <div class="grid">
-
-            <div class="card" width="25%">
+            <div class="card">
                 <h2>タイムゾーン設定</h2>
                 <div class="control-group">
                     <select id="select-timezone" disabled>
@@ -479,7 +482,9 @@
                     </select>
                     <button id="btn-set-timezone" disabled>タイムゾーンを送信</button>
                 </div>
-
+            </div>
+            
+            <div class="card">
                 <h2>アンチポイズニングの実行時刻</h2>
                 <div class="control-group">
                     <label for="input-schedule-time">設定時刻 (HH:MM):</label>
@@ -488,7 +493,7 @@
                 </div>
             </div>
 
-            <div class="card" width="25%">
+            <div class="card">
                 <h2>測定する</h2>
                 <div class="control-group">
                     <button id="btn-set-dm" disabled>何かを測定</button>
@@ -500,6 +505,10 @@
                     <button id="btn-set-custom-val" disabled>数値で何かを測定</button>
                 </div>
             </div>
+
+        </div>
+
+        <div class="grid">
 
             <div class="card" width="50%">
                 <h2>ニキシー管 任意表示設定（撮影モード）</h2>
@@ -587,6 +596,7 @@
             </div>
 
         </div>
+
         <!-- システムログ領域 -->
         <div class="grid">
             <div class="card">
