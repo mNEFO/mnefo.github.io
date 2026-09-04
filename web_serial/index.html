@@ -420,6 +420,7 @@
                         <option value="date">日付表示</option>
                         <option value="thp">温度湿度気圧表示</option>
                         <option value="dm">計測モード</option>
+                        <option value="photo">写真モード</option>
                         <option value="test">テストモード</option>
                     </select>
                     <button id="btn-set-mode" disabled>モード変更を送信</button>
@@ -443,15 +444,6 @@
         </div>
 
         <div class="grid">
-
-            <div class="card">
-                <h2>アンチポイズニングの実行時刻</h2>
-                <div class="control-group">
-                    <label for="input-schedule-time">設定時刻 (HH:MM):</label>
-                    <input type="time" id="input-schedule-time" value="03:00" disabled>
-                    <button id="btn-set-schedule" disabled>実行時刻を送信</button>
-                </div>
-            </div>
 
             <div class="card">
                 <h2>タイムゾーン設定</h2>
@@ -486,6 +478,13 @@
                         <option value="14">UTC+14:00 (ライン諸島 / キリバス)</option>
                     </select>
                     <button id="btn-set-timezone" disabled>タイムゾーンを送信</button>
+                </div>
+
+                <h2>アンチポイズニングの実行時刻</h2>
+                <div class="control-group">
+                    <label for="input-schedule-time">設定時刻 (HH:MM):</label>
+                    <input type="time" id="input-schedule-time" value="03:00" disabled>
+                    <button id="btn-set-schedule" disabled>実行時刻を送信</button>
                 </div>
             </div>
 

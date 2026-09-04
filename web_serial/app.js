@@ -277,6 +277,14 @@ btnSendManualDisplay.addEventListener('click', () => {
     appendLog(`[送信] 任意表示: [${digits.join(',')}]`);
 });
 
+// 接続状態連動 (setConnectedState 内に追加)
+function updateManualDisplayControls(connected) {
+    btnSendManualDisplay.disabled = !connected;
+    document.querySelectorAll('.tube-val, .dot-l, .dot-r').forEach(el => {
+        el.disabled = !connected;
+    });
+}
+
 // USBケーブルが物理的に抜かれた場合の自動処理
 if ("serial" in navigator) {
     navigator.serial.addEventListener('disconnect', (event) => {
@@ -543,13 +551,8 @@ function setConnectedState(connected) {
         statusDot.classList.remove('connected');
         resetUiToDefault();
     }
-    
-    function updateManualDisplayControls(connected) {
-        btnSendManualDisplay.disabled = !connected;
-        document.querySelectorAll('.tube-val, .dot-l, .dot-r').forEach(el => {
-            el.disabled = !connected;
-        });
-    }
+
+    updateManualDisplayControls(connected);
 }
 
 // コンソール領域へのログ出力追記
