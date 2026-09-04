@@ -224,6 +224,91 @@
             opacity: 0.4;
             cursor: not-allowed;
         }
+
+        .hint-text {
+            font-size: 0.85rem;
+            color: #aaa;
+            margin-bottom: 12px;
+        }
+
+        /* 8管の横並びコンテナ */
+        .nixie-tube-container {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            background: #1e1e1e;
+            padding: 12px 8px;
+            border-radius: 6px;
+            border: 1px solid var(--border-color, #333);
+            margin-bottom: 14px;
+        }
+
+        /* 各管のブロック */
+        .tube-unit {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .tube-label {
+            font-size: 0.75rem;
+            color: #888;
+            font-family: monospace;
+        }
+
+        /* 数字スピンボックス */
+        .tube-val {
+            width: 100%;
+            max-width: 46px;
+            height: 36px;
+            text-align: center;
+            background: #2a2a2a;
+            color: #ff8533;
+            border: 1px solid #444;
+            border-radius: 4px;
+            font-size: 1.1rem;
+            font-weight: bold;
+        }
+
+        .tube-val:focus {
+            border-color: #ff6b00;
+            outline: none;
+        }
+
+        /* ドットチェックボックス群 */
+        .dot-controls {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot-controls input[type="checkbox"] {
+            appearance: none;
+            width: 14px;
+            height: 14px;
+            border: 1px solid #555;
+            background-color: #222;
+            border-radius: 2px;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .dot-controls input[type="checkbox"]:checked {
+            background-color: #ff6b00;
+            border-color: #ff8533;
+            box-shadow: 0 0 4px #ff6b00;
+        }
+
+        .dot-controls input[type="checkbox"]:disabled,
+        .tube-val:disabled {
+            opacity: 0.35;
+            cursor: not-allowed;
+        }
+
+        .tube-actions {
+            display: flex;
+            justify-content: flex-end;
+        }
     </style>
 </head>
 
@@ -298,18 +383,18 @@
                 <p class="sensor-val"><span id="val-temp">--.-</span> <span class="unit">°C</span>
                     <span id="val-hum">--.-</span> <span class="unit">%</span>
                 </p>
-            </div>
-
-            <div class="card">
                 <h2>LPS22 気圧</h2>
                 <p class="sensor-val"><span id="val-press">----.-</span> <span class="unit">hPa</span></p>
             </div>
-        </div>
-        <div class="grid">
+
             <div class="card">
                 <h2>光センサー照度 (L / R)</h2>
                 <p class="sensor-val"><span id="val-ls-l">--</span> / <span id="val-ls-r">--</span></p>
             </div>
+
+        </div>
+
+        <div class="grid">
 
             <div class="card">
                 <h2>光センサー感度<br />（感度より低いと暗くなる）</h2>
@@ -341,10 +426,6 @@
                 </div>
             </div>
 
-        </div>
-
-        <div class="grid">
-
             <div class="card">
                 <h2>ドットモード切替</h2>
                 <div class="control-group">
@@ -358,6 +439,10 @@
                     <button id="btn-set-dot-mode" disabled>モード変更を送信</button>
                 </div>
             </div>
+
+        </div>
+
+        <div class="grid">
 
             <div class="card">
                 <h2>アンチポイズニングの実行時刻</h2>
@@ -414,6 +499,91 @@
                     <input type="number" id="input-custom-val" min="0" max="9.999999" step="0.000001"
                         placeholder="1.234567" value="1.000000" disabled>
                     <button id="btn-set-custom-val" disabled>数値で何かを測定</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>ニキシー管 任意表示設定（撮影モード）</h2>
+                <p class="hint-text">※ 数字を非表示（消灯）にする場合は「10」を設定してください。</p>
+
+                <div class="nixie-tube-container">
+                    <!-- JSで動的生成も可能ですが、HTML直書きの構成例です -->
+                    <!-- Tube 1 〜 8 -->
+                    <div class="tube-unit" data-tube="0">
+                        <span class="tube-label">#1</span>
+                        <input type="number" class="tube-val" min="0" max="10" value="1" disabled>
+                        <div class="dot-controls">
+                            <label title="左ドット"><input type="checkbox" class="dot-l" disabled></label>
+                            <label title="右ドット"><input type="checkbox" class="dot-r" disabled></label>
+                        </div>
+                    </div>
+
+                    <div class="tube-unit" data-tube="1">
+                        <span class="tube-label">#2</span>
+                        <input type="number" class="tube-val" min="0" max="10" value="2" disabled>
+                        <div class="dot-controls">
+                            <label title="左ドット"><input type="checkbox" class="dot-l" disabled></label>
+                            <label title="右ドット"><input type="checkbox" class="dot-r" disabled></label>
+                        </div>
+                    </div>
+
+                    <div class="tube-unit" data-tube="2">
+                        <span class="tube-label">#3</span>
+                        <input type="number" class="tube-val" min="0" max="10" value="3" disabled>
+                        <div class="dot-controls">
+                            <label title="左ドット"><input type="checkbox" class="dot-l" disabled></label>
+                            <label title="右ドット"><input type="checkbox" class="dot-r" disabled></label>
+                        </div>
+                    </div>
+
+                    <div class="tube-unit" data-tube="3">
+                        <span class="tube-label">#4</span>
+                        <input type="number" class="tube-val" min="0" max="10" value="4" disabled>
+                        <div class="dot-controls">
+                            <label title="左ドット"><input type="checkbox" class="dot-l" disabled></label>
+                            <label title="右ドット"><input type="checkbox" class="dot-r" disabled></label>
+                        </div>
+                    </div>
+
+                    <div class="tube-unit" data-tube="4">
+                        <span class="tube-label">#5</span>
+                        <input type="number" class="tube-val" min="0" max="10" value="5" disabled>
+                        <div class="dot-controls">
+                            <label title="左ドット"><input type="checkbox" class="dot-l" disabled></label>
+                            <label title="右ドット"><input type="checkbox" class="dot-r" disabled></label>
+                        </div>
+                    </div>
+
+                    <div class="tube-unit" data-tube="5">
+                        <span class="tube-label">#6</span>
+                        <input type="number" class="tube-val" min="0" max="10" value="6" disabled>
+                        <div class="dot-controls">
+                            <label title="左ドット"><input type="checkbox" class="dot-l" disabled></label>
+                            <label title="右ドット"><input type="checkbox" class="dot-r" disabled></label>
+                        </div>
+                    </div>
+
+                    <div class="tube-unit" data-tube="6">
+                        <span class="tube-label">#7</span>
+                        <input type="number" class="tube-val" min="0" max="10" value="7" disabled>
+                        <div class="dot-controls">
+                            <label title="左ドット"><input type="checkbox" class="dot-l" disabled></label>
+                            <label title="右ドット"><input type="checkbox" class="dot-r" disabled></label>
+                        </div>
+                    </div>
+
+                    <div class="tube-unit" data-tube="7">
+                        <span class="tube-label">#8</span>
+                        <input type="number" class="tube-val" min="0" max="10" value="8" disabled>
+                        <div class="dot-controls">
+                            <label title="左ドット"><input type="checkbox" class="dot-l" disabled></label>
+                            <label title="右ドット"><input type="checkbox" class="dot-r" disabled></label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="tube-actions">
+                    <button id="btn-send-manual-display" disabled>設定</button>
                 </div>
             </div>
 

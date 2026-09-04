@@ -44,6 +44,7 @@ const btnSetDefault = document.getElementById('btn-set-default');
 const btnSetDm = document.getElementById('btn-set-dm');
 const inputCustomVal = document.getElementById('input-custom-val');
 const btnSetCustomVal = document.getElementById('btn-set-custom-val');
+const btnSendManualDisplay = document.getElementById('btn-send-manual-display');
 
 // ==========================================
 // イベントリスナーの登録
@@ -242,6 +243,38 @@ btnSetCustomVal.addEventListener('click', () => {
     });
 
     appendLog(`[送信] パラメータ設定: ${numVal.toFixed(7)}`);
+});
+
+// 送信ボタン押下時
+btnSendManualDisplay.addEventListener('click', () => {
+    const tubeUnits = document.querySelectorAll('.tube-unit');
+    const digits = [];
+    const dots = []; // 各管のドット状態（ビットマスクまたは配列）
+
+    tubeUnits.forEach(unit => {
+        const valInput = unit.querySelector('.tube-val');
+        const dotL = unit.querySelector('.dot-l').checked;
+        const dotR = unit.querySelector('.dot-r').checked;
+
+        // 数値 (0〜10)
+        let num = parseInt(valInput.value, 10);
+        if (isNaN(num) || num < 0) num = 10;
+        if (num > 10) num = 10;
+        digits.push(num);
+
+        // ドットフラグ (例: bit0 = L, bit1 = R)
+        const dotMask = (dotL ? 1 : 0) | (dotR ? 2 : 0);
+        dots.push(dotMask);
+    });
+
+    // RP2350 へJSON送信
+    sendJsonCommand({
+        cmd: "SET_MANUAL_DISP",
+        digits: digits, // [1, 2, 3, 4, 5, 6, 7, 8]
+        dots: dots      // [0, 1, 3, ...] (0:なし, 1:左, 2:右, 3:両方)
+    });
+
+    appendLog(`[送信] 任意表示: [${digits.join(',')}]`);
 });
 
 // USBケーブルが物理的に抜かれた場合の自動処理
@@ -509,6 +542,13 @@ function setConnectedState(connected) {
     } else {
         statusDot.classList.remove('connected');
         resetUiToDefault();
+    }
+    
+    function updateManualDisplayControls(connected) {
+        btnSendManualDisplay.disabled = !connected;
+        document.querySelectorAll('.tube-val, .dot-l, .dot-r').forEach(el => {
+            el.disabled = !connected;
+        });
     }
 }
 
