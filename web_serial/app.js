@@ -280,9 +280,9 @@ btnSendManualDisplay.addEventListener('click', () => {
 // 接続状態連動 (setConnectedState 内に追加)
 function updateManualDisplayControls(connected) {
     btnSendManualDisplay.disabled = !connected;
-    document.querySelectorAll('.tube-val, .dot-l, .dot-r').forEach(el => {
-        el.disabled = !connected;
-    });
+    document.querySelectorAll('.tube-val, .dot-l, .dot-r').forEach(el => { el.disabled = !connected; });
+    document.querySelectorAll('.tube-val').forEach(el => { el.value = 0; });
+    document.querySelectorAll('.dot-l, .dot-r').forEach(el => { el.checked = false; });
 }
 
 // USBケーブルが物理的に抜かれた場合の自動処理
@@ -449,6 +449,32 @@ function parseReceivedJson(jsonString) {
                     const h = String(data.schedule.hour).padStart(2, '0');
                     const m = String(data.schedule.min).padStart(2, '0');
                     inputScheduleTime.value = `${h}:${m}`;
+                }
+                if (data.dm_custom_val) {
+                    inputCustomVal.value = data.dm_custom_val.toFixed(6);
+                }
+                if (data.photo_digits) {
+                    const tubeUnits = document.querySelectorAll('.tube-unit');
+                    tubeUnits.forEach((unit, index) => {
+                        const valInput = unit.querySelector('.tube-val');
+
+                        if (data.photo_digits[index] !== undefined) {
+                            valInput.value = data.photo_digits[index];
+                        }
+                    });
+                }
+                if (data.photo_dots) {
+                    const tubeUnits = document.querySelectorAll('.tube-unit');
+                    tubeUnits.forEach((unit, index) => {
+                        const dotL = unit.querySelector('.dot-l');
+                        const dotR = unit.querySelector('.dot-r');
+
+                        if (data.photo_dots[index] !== undefined) {
+                            const dotMask = data.photo_dots[index];
+                            dotL.checked = (dotMask & 1) !== 0;
+                            dotR.checked = (dotMask & 2) !== 0;
+                        }
+                    });
                 }
                 if (data.features) {
                     toggleGps.checked = data.features.gps;
