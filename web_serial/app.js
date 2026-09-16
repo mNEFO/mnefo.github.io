@@ -425,7 +425,7 @@ function parseReceivedJson(jsonString) {
                 if (data.board_id) {
                     valBoardId.textContent = data.board_id;
                 }
-                if (data.storage) {
+                if (data.flash_usage) {
                     valStorage.textContent = `${data.storage}%`;
                 }
                 if (data.pico_temp) {
@@ -608,6 +608,7 @@ function resetUiToDefault() {
     const valBoardId = document.getElementById('val-board-id');
     if (valBoardId) valBoardId.textContent = "----------------";
     if (valBoardTemp) valBoardTemp.textContent = "--.-"
+    if (valStorage) valStorage.textContent = "-- %";
 
     // コントロール類の値を初期値に戻したい場合（任意）
     if (selectMode) selectMode.value = "clock";
