@@ -30,6 +30,7 @@ const valLsR = document.getElementById('val-ls-r');
 const valBoardId = document.getElementById('val-board-id');
 const valBoardTemp = document.getElementById('val-board-temp');
 const valUptime = document.getElementById('val-uptime');
+const valStorage = document.getElementById('val-storage');
 const toggleGps = document.getElementById('toggle-gps');
 const toggleSensor = document.getElementById('toggle-sensor');
 const toggleDark = document.getElementById('toggle-dark');
@@ -423,6 +424,9 @@ function parseReceivedJson(jsonString) {
                 }
                 if (data.board_id) {
                     valBoardId.textContent = data.board_id;
+                }
+                if (data.storage) {
+                    valStorage.textContent = `${data.storage}%`;
                 }
                 if (data.pico_temp) {
                     valBoardTemp.textContent = data.pico_temp.toFixed(1);
