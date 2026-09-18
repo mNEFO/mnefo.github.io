@@ -426,7 +426,7 @@ function parseReceivedJson(jsonString) {
                     valBoardId.textContent = data.board_id;
                 }
                 if (data.flash_usage) {
-                    valStorage.textContent = `${data.flash_usage.toString()}%`;
+                    valStorage.textContent = data.flash_usage;
                 }
                 if (data.pico_temp) {
                     valBoardTemp.textContent = data.pico_temp.toFixed(1);
