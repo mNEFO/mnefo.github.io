@@ -406,10 +406,27 @@ function processBuffer() {
     }
 }
 
+// エポック秒 (秒単位) を「MM/DD HH:mm」形式に変換する関数
+function formatEpochToDateTime(epochSec) {
+    if (!epochSec) return "";
+
+    // JavaScriptのDateはミリ秒単位のため 1000倍 する
+    const date = new Date(Number(epochSec) * 1000);
+
+    const m = String(date.getMonth() + 1).padStart(2, '0');
+    const d = String(date.getDate()).padStart(2, '0');
+    const hh = String(date.getHours()).padStart(2, '0');
+    const mm = String(date.getMinutes()).padStart(2, '0');
+
+    // 例: "09/25 14:30"
+    return `${m}/${d} ${hh}:${mm}`;
+}
+
 // JSON受信ハンドラ（parseReceivedJson 内に追加）
 function handleWeatherRecords(data) {
     if (data.type === "weather_record") {
         // 1件ずつバッファに蓄積
+        const timeLabel = formatEpochToDateTime(data.time || data.epoch);
         recordBuffer.labels.push(data.time);
         recordBuffer.temps.push(data.temp);
         recordBuffer.hums.push(data.hum);
@@ -704,7 +721,12 @@ let chartPress = null;
 function initCharts() {
     const commonScalesX = {
         grid: { color: 'rgba(255, 255, 255, 0.1)' },
-        ticks: { color: '#888', maxTicksLimit: 8 }
+        ticks: {
+            color: '#888',
+            maxTicksLimit: 6, // 画面上に表示する目盛りの最大数（自動で間引き）
+            maxRotation: 0,   // ラベルを斜めにせず水平に保つ
+            autoSkip: true
+        }
     };
 
     // 1. 温湿度グラフ（左右2軸）
