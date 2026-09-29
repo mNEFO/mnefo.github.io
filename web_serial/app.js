@@ -427,7 +427,7 @@ function handleWeatherRecords(data) {
     if (data.type === "weather_record") {
         // 1件ずつバッファに蓄積
         const timeLabel = formatEpochToDateTime(data.time || data.epoch);
-        recordBuffer.labels.push(data.time);
+        recordBuffer.labels.push(timeLabel);
         recordBuffer.temps.push(data.temp);
         recordBuffer.hums.push(data.hum);
         recordBuffer.pressures.push(data.press);
