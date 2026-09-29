@@ -309,6 +309,12 @@
             display: flex;
             justify-content: flex-end;
         }
+
+        .chart-wrapper {
+            position: relative;
+            height: 220px;
+            width: 100%;
+        }
     </style>
 </head>
 
@@ -598,6 +604,21 @@
         </div>
 
         <div class="grid">
+            <div class="card">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
+                    <h2>環境センサー推移</h2>
+                    <button id="btn-fetch-records" disabled>履歴データを読み込む</button>
+                </div>
+                <div class="chart-wrapper">
+                    <canvas id="chart-temp-hum"></canvas>
+                </div>
+                <div class="chart-wrapper" style="margin-top: 16px;">
+                    <canvas id="chart-press"></canvas>
+                </div>
+            </div>
+        </div>
+
+        <div class="grid">
 
             <div class="card">
                 <h2>Board ID</h2>
@@ -635,6 +656,8 @@
 
     <!-- JavaScriptの読み込み -->
     <script src="app.js"></script>
+    <!-- Chart.js CDN -->
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </body>
 
 </html>

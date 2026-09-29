@@ -46,6 +46,7 @@ const btnSetDm = document.getElementById('btn-set-dm');
 const inputCustomVal = document.getElementById('input-custom-val');
 const btnSetCustomVal = document.getElementById('btn-set-custom-val');
 const btnSendManualDisplay = document.getElementById('btn-send-manual-display');
+const btnFetchRecords = document.getElementById('btn-fetch-records');
 
 // ==========================================
 // イベントリスナーの登録
@@ -286,6 +287,18 @@ function updateManualDisplayControls(connected) {
     document.querySelectorAll('.dot-l, .dot-r').forEach(el => { el.checked = false; });
 }
 
+// 読み込みボタン押下時
+btnFetchRecords.addEventListener('click', () => {
+    // バッファ初期化
+    recordBuffer = { labels: [], temps: [], hums: [], pressures: [] };
+
+    btnFetchRecords.disabled = true;
+    btnFetchRecords.textContent = "読込中...";
+
+    sendJsonCommand({ cmd: "GET_RECORDS" });
+    appendLog("[送信] 履歴データ取得リクエスト");
+});
+
 // USBケーブルが物理的に抜かれた場合の自動処理
 if ("serial" in navigator) {
     navigator.serial.addEventListener('disconnect', (event) => {
@@ -389,6 +402,34 @@ function processBuffer() {
         if (trimmedLine.length > 0) {
             parseReceivedJson(trimmedLine);
         }
+    }
+}
+
+// JSON受信ハンドラ（parseReceivedJson 内に追加）
+function handleWeatherRecords(data) {
+    if (data.type === "weather_record") {
+        // 1件ずつバッファに蓄積
+        recordBuffer.labels.push(data.time);
+        recordBuffer.temps.push(data.temp);
+        recordBuffer.hums.push(data.hum);
+        recordBuffer.pressures.push(data.press);
+    }
+    else if (data.type === "weather_record_end") {
+        // 全件受信完了 -> グラフに一括反映して描画
+        if (chartTempHum && chartPress) {
+            chartTempHum.data.labels = [...recordBuffer.labels];
+            chartTempHum.data.datasets[0].data = [...recordBuffer.temps];
+            chartTempHum.data.datasets[1].data = [...recordBuffer.hums];
+            chartTempHum.update();
+
+            chartPress.data.labels = [...recordBuffer.labels];
+            chartPress.data.datasets[0].data = [...recordBuffer.pressures];
+            chartPress.update();
+        }
+
+        appendLog(`[受信] 履歴データ ${data.count} 件を受信完了`);
+        btnFetchRecords.disabled = false;
+        btnFetchRecords.textContent = "履歴データを読み込む";
     }
 }
 
@@ -506,6 +547,7 @@ function parseReceivedJson(jsonString) {
             default:
                 console.log("未定義のデータタイプ:", data);
         }
+        handleWeatherRecords(data);
     } catch (e) {
         // JSON以外の生の文字列が流れてきた場合はそのままログに出す
         appendLog(`[RECV Raw Serial] ${jsonString}`);
@@ -587,6 +629,11 @@ function setConnectedState(connected) {
         resetUiToDefault();
     }
 
+    if (btnFetchRecords) {
+        btnFetchRecords.disabled = !connected;
+        btnFetchRecords.textContent = "履歴データを読み込む";
+    }
+
     updateManualDisplayControls(connected);
 }
 
@@ -640,4 +687,140 @@ function resetUiToDefault() {
     const toggleAP = document.getElementById('toggle-ap');
     if (toggleAP) toggleAP.checked = false;
     if (valUptime) valUptime.textContent = "--年--ヶ月--日--時間--分--秒";
+}
+
+// ==========================================
+// 気象データテレメトリー
+// ==========================================
+
+// 最大保持データ数（1秒ごとの更新なら直近1分間）
+const MAX_DATA_POINTS = 60;
+
+let chartTempHum = null;
+let chartPress = null;
+
+// グラフの初期化関数
+function initCharts() {
+    const commonScalesX = {
+        grid: { color: 'rgba(255, 255, 255, 0.1)' },
+        ticks: { color: '#888', maxTicksLimit: 8 }
+    };
+
+    // 1. 温湿度グラフ（左右2軸）
+    const ctxTempHum = document.getElementById('chart-temp-hum').getContext('2d');
+    chartTempHum = new Chart(ctxTempHum, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [
+                {
+                    label: '気温 (℃)',
+                    data: [],
+                    borderColor: '#ff6b00',
+                    backgroundColor: 'rgba(255, 107, 0, 0.1)',
+                    yAxisID: 'yTemp',
+                    tension: 0.3,
+                    pointRadius: 2
+                },
+                {
+                    label: '湿度 (%)',
+                    data: [],
+                    borderColor: '#00bfff',
+                    backgroundColor: 'rgba(0, 191, 255, 0.1)',
+                    yAxisID: 'yHum',
+                    tension: 0.3,
+                    pointRadius: 2
+                }
+            ]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false, // リアルタイム描画のためアニメーションOFF
+            scales: {
+                x: commonScalesX,
+                yTemp: {
+                    type: 'linear',
+                    position: 'left',
+                    title: { display: true, text: '℃', color: '#ff6b00' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    ticks: { color: '#ff6b00' }
+                },
+                yHum: {
+                    type: 'linear',
+                    position: 'right',
+                    min: 0,
+                    max: 100,
+                    title: { display: true, text: '%', color: '#00bfff' },
+                    grid: { drawOnChartArea: false }, // グリッド線の重複を防ぐ
+                    ticks: { color: '#00bfff' }
+                }
+            },
+            plugins: {
+                legend: { labels: { color: '#ccc' } }
+            }
+        }
+    });
+
+    // 2. 気圧グラフ
+    const ctxPress = document.getElementById('chart-press').getContext('2d');
+    chartPress = new Chart(ctxPress, {
+        type: 'line',
+        data: {
+            labels: [],
+            datasets: [{
+                label: '気圧 (hPa)',
+                data: [],
+                borderColor: '#2ecc71',
+                backgroundColor: 'rgba(46, 204, 113, 0.1)',
+                tension: 0.3,
+                pointRadius: 2
+            }]
+        },
+        options: {
+            responsive: true,
+            maintainAspectRatio: false,
+            animation: false,
+            scales: {
+                x: commonScalesX,
+                y: {
+                    title: { display: true, text: 'hPa', color: '#2ecc71' },
+                    grid: { color: 'rgba(255, 255, 255, 0.1)' },
+                    ticks: { color: '#2ecc71' }
+                }
+            },
+            plugins: {
+                legend: { labels: { color: '#ccc' } }
+            }
+        }
+    });
+}
+
+// グラフに新しいデータを1点追加する関数
+function addSensorDataToChart(timeLabel, temp, hum, press) {
+    if (!chartTempHum || !chartPress) return;
+
+    // --- 温湿度更新 ---
+    const thLabels = chartTempHum.data.labels;
+    thLabels.push(timeLabel);
+    chartTempHum.data.datasets[0].data.push(temp);
+    chartTempHum.data.datasets[1].data.push(hum);
+
+    if (thLabels.length > MAX_DATA_POINTS) {
+        thLabels.shift();
+        chartTempHum.data.datasets[0].data.shift();
+        chartTempHum.data.datasets[1].data.shift();
+    }
+    chartTempHum.update();
+
+    // --- 気圧更新 ---
+    const pressLabels = chartPress.data.labels;
+    pressLabels.push(timeLabel);
+    chartPress.data.datasets[0].data.push(press);
+
+    if (pressLabels.length > MAX_DATA_POINTS) {
+        pressLabels.shift();
+        chartPress.data.datasets[0].data.shift();
+    }
+    chartPress.update();
 }
