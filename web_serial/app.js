@@ -47,6 +47,7 @@ const inputCustomVal = document.getElementById('input-custom-val');
 const btnSetCustomVal = document.getElementById('btn-set-custom-val');
 const btnSendManualDisplay = document.getElementById('btn-send-manual-display');
 const btnFetchRecords = document.getElementById('btn-fetch-records');
+window.addEventListener('DOMContentLoaded', initCharts);
 
 // ==========================================
 // イベントリスナーの登録
