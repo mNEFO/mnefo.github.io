@@ -55,6 +55,7 @@ const inputCustomVal = document.getElementById('input-custom-val');
 const btnSetCustomVal = document.getElementById('btn-set-custom-val');
 const btnSendManualDisplay = document.getElementById('btn-send-manual-display');
 const btnFetchRecords = document.getElementById('btn-fetch-records');
+const btnExportCsv = document.getElementById('btn-export-csv');
 window.addEventListener('DOMContentLoaded', initCharts);
 
 // ==========================================
@@ -300,6 +301,48 @@ document.querySelectorAll('.btn-range').forEach(btn => {
     });
 });
 
+// CSV保存ボタンのクリックイベント
+btnExportCsv.addEventListener('click', () => {
+    if (!allWeatherRecords || allWeatherRecords.length === 0) {
+        alert("保存対象のデータがありません。先にデータを読み込んでください。");
+        return;
+    }
+
+    // Excel文字化け防止用 BOM (\uFEFF) を先頭に付与
+    let csvString = "\uFEFF日時,エポック秒,気温(℃),湿度(%),気圧(hPa)\r\n";
+
+    allWeatherRecords.forEach(r => {
+        const date = new Date(r.epoch * 1000);
+        const y = date.getFullYear();
+        const m = String(date.getMonth() + 1).padStart(2, '0');
+        const d = String(date.getDate()).padStart(2, '0');
+        const hh = String(date.getHours()).padStart(2, '0');
+        const mm = String(date.getMinutes()).padStart(2, '0');
+        const ss = String(date.getSeconds()).padStart(2, '0');
+        const timeStr = `${y}/${m}/${d} ${hh}:${mm}:${ss}`;
+
+        csvString += `"${timeStr}",${r.epoch},${r.temp},${r.hum},${r.press}\r\n`;
+    });
+
+    // Blobの生成とダウンロードトリガー
+    const blob = new Blob([csvString], { type: 'text/csv;charset=utf-8;' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+
+    // ファイル名（例: sensor_log_20260930_2045.csv）
+    const now = new Date();
+    const ts = `${now.getFullYear()}${String(now.getMonth() + 1).padStart(2, '0')}${String(now.getDate()).padStart(2, '0')}_${String(now.getHours()).padStart(2, '0')}${String(now.getMinutes()).padStart(2, '0')}`;
+
+    a.href = url;
+    a.download = `nixie_sensor_log_${ts}.csv`;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
+
+    appendLog(`[システム] CSVファイルを保存しました (${allWeatherRecords.length} 件)`);
+});
+
 // 接続状態連動 (setConnectedState 内に追加)
 function updateManualDisplayControls(connected) {
     btnSendManualDisplay.disabled = !connected;
@@ -311,6 +354,7 @@ function updateManualDisplayControls(connected) {
 // 読み込みボタン押下時
 btnFetchRecords.addEventListener('click', () => {
     allWeatherRecords = []; // マスターデータをリセット
+    if (btnExportCsv) btnExportCsv.disabled = true; // 読込中は一時無効化
     btnFetchRecords.disabled = true;
     btnFetchRecords.textContent = "読込中...";
 
@@ -443,32 +487,6 @@ function formatEpochToDateTime(epochSec) {
 
 // JSON受信ハンドラ（parseReceivedJson 内に追加）
 function handleWeatherRecords(data) {
-    // if (data.type === "weather_record") {
-    //     // 1件ずつバッファに蓄積
-    //     const timeLabel = formatEpochToDateTime(data.time || data.epoch);
-    //     recordBuffer.labels.push(timeLabel);
-    //     recordBuffer.temps.push(data.temp);
-    //     recordBuffer.hums.push(data.hum);
-    //     recordBuffer.pressures.push(data.press);
-    // }
-    // else if (data.type === "weather_record_end") {
-    //     // 全件受信完了 -> グラフに一括反映して描画
-    //     if (chartTempHum && chartPress) {
-    //         chartTempHum.data.labels = [...recordBuffer.labels];
-    //         chartTempHum.data.datasets[0].data = [...recordBuffer.temps];
-    //         chartTempHum.data.datasets[1].data = [...recordBuffer.hums];
-    //         chartTempHum.update();
-
-    //         chartPress.data.labels = [...recordBuffer.labels];
-    //         chartPress.data.datasets[0].data = [...recordBuffer.pressures];
-    //         chartPress.update();
-    //     }
-
-    //     appendLog(`[受信] 履歴データ ${data.count} 件を受信完了`);
-    //     btnFetchRecords.disabled = false;
-    //     btnFetchRecords.textContent = "履歴データを読み込む";
-    // }
-    // JSON受信処理 (parseReceivedJson 内)
     if (data.type === "weather_record") {
         // マスター配列にオブジェクトとして蓄積（エポック秒を保持）
         allWeatherRecords.push({
@@ -479,12 +497,16 @@ function handleWeatherRecords(data) {
         });
     }
     else if (data.type === "weather_record_end") {
-        // 全件届いたら、現在選択されている期間（デフォルトは全期間）でグラフ描画
         applyChartRange(currentRange);
 
         appendLog(`[受信] 履歴データ ${data.count} 件を受信完了`);
         btnFetchRecords.disabled = false;
         btnFetchRecords.textContent = "履歴データを読み込む";
+
+        // データが存在すればCSV保存ボタンを有効化
+        if (btnExportCsv) {
+            btnExportCsv.disabled = (allWeatherRecords.length === 0);
+        }
     }
 }
 
@@ -745,6 +767,7 @@ function resetUiToDefault() {
 
     // ... 既存のリセット処理 ...
     allWeatherRecords = [];
+    if (btnExportCsv) btnExportCsv.disabled = true;
 }
 
 // ==========================================
