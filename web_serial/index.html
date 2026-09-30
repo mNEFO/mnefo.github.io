@@ -315,6 +315,52 @@
             height: 220px;
             width: 100%;
         }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 12px;
+        }
+
+        .chart-controls {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        /* 期間切り替えボタングループ */
+        .btn-group-range {
+            display: flex;
+            background-color: #222;
+            border-radius: 4px;
+            padding: 2px;
+            border: 1px solid #444;
+        }
+
+        .btn-range {
+            background: transparent;
+            border: none;
+            color: #aaa;
+            padding: 6px 12px;
+            font-size: 0.85rem;
+            cursor: pointer;
+            border-radius: 3px;
+            transition: all 0.2s ease;
+        }
+
+        .btn-range:hover {
+            color: #fff;
+            background-color: rgba(255, 255, 255, 0.05);
+        }
+
+        .btn-range.active {
+            background-color: #ff6b00;
+            color: #fff;
+            font-weight: bold;
+        }
     </style>
 </head>
 
@@ -605,10 +651,20 @@
 
         <div class="grid">
             <div class="card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
-                    <h2>環境センサー推移(適宜読み込んでください)</h2>
-                    <button id="btn-fetch-records" disabled>履歴データを読み込む</button>
+                <div class="chart-header">
+                    <h2>環境センサー推移</h2>
+                    <div class="chart-controls">
+                        <!-- 期間切り替えボタン -->
+                        <div class="btn-group-range">
+                            <button type="button" class="btn-range" data-range="1d">1日</button>
+                            <button type="button" class="btn-range" data-range="1w">1週間</button>
+                            <button type="button" class="btn-range" data-range="1m">1ヶ月</button>
+                            <button type="button" class="btn-range active" data-range="all">全期間</button>
+                        </div>
+                        <button id="btn-fetch-records" disabled>履歴データを読み込む</button>
+                    </div>
                 </div>
+
                 <div class="chart-wrapper">
                     <canvas id="chart-temp-hum"></canvas>
                 </div>

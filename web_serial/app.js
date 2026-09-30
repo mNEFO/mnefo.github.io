@@ -6,6 +6,14 @@ let reader = null;
 let writer = null;
 let isConnected = false;
 let rxBuffer = ""; // 受信バッファ（行分割用）
+// 受信した全レコードを保持する配列
+let allWeatherRecords = [];
+// 現在選択中の表示期間 ('1d', '1w', '1m', 'all')
+let currentRange = 'all';
+// 秒数定義
+const SECONDS_1D = 86400;
+const SECONDS_1W = 86400 * 7;
+const SECONDS_1M = 86400 * 30;
 
 // ==========================================
 // DOM要素の取得
@@ -280,6 +288,18 @@ btnSendManualDisplay.addEventListener('click', () => {
     appendLog(`[送信] 任意表示: [${digits.join(',')}]`);
 });
 
+document.querySelectorAll('.btn-range').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+        // アクティブ表示の切り替え
+        document.querySelectorAll('.btn-range').forEach(b => b.classList.remove('active'));
+        e.target.classList.add('active');
+
+        // 範囲を適用
+        const range = e.target.getAttribute('data-range');
+        applyChartRange(range);
+    });
+});
+
 // 接続状態連動 (setConnectedState 内に追加)
 function updateManualDisplayControls(connected) {
     btnSendManualDisplay.disabled = !connected;
@@ -290,15 +310,32 @@ function updateManualDisplayControls(connected) {
 
 // 読み込みボタン押下時
 btnFetchRecords.addEventListener('click', () => {
-    // バッファ初期化
-    recordBuffer = { labels: [], temps: [], hums: [], pressures: [] };
-
+    allWeatherRecords = []; // マスターデータをリセット
     btnFetchRecords.disabled = true;
     btnFetchRecords.textContent = "読込中...";
 
     sendJsonCommand({ cmd: "GET_RECORDS" });
     appendLog("[送信] 履歴データ取得リクエスト");
 });
+
+// JSON受信処理 (parseReceivedJson 内)
+if (data.type === "weather_record") {
+    // マスター配列にオブジェクトとして蓄積（エポック秒を保持）
+    allWeatherRecords.push({
+        epoch: Number(data.time || data.epoch),
+        temp: data.temp,
+        hum: data.hum,
+        press: data.press
+    });
+} 
+else if (data.type === "weather_record_end") {
+    // 全件届いたら、現在選択されている期間（デフォルトは全期間）でグラフ描画
+    applyChartRange(currentRange);
+
+    appendLog(`[受信] 履歴データ ${data.count} 件を受信完了`);
+    btnFetchRecords.disabled = false;
+    btnFetchRecords.textContent = "履歴データを読み込む";
+}
 
 // USBケーブルが物理的に抜かれた場合の自動処理
 if ("serial" in navigator) {
@@ -705,6 +742,9 @@ function resetUiToDefault() {
     const toggleAP = document.getElementById('toggle-ap');
     if (toggleAP) toggleAP.checked = false;
     if (valUptime) valUptime.textContent = "--年--ヶ月--日--時間--分--秒";
+
+    // ... 既存のリセット処理 ...
+    allWeatherRecords = [];
 }
 
 // ==========================================
@@ -846,4 +886,69 @@ function addSensorDataToChart(timeLabel, temp, hum, press) {
         chartPress.data.datasets[0].data.shift();
     }
     chartPress.update();
+}
+
+// 指定範囲でデータを絞り込んでグラフを更新する関数
+function applyChartRange(range) {
+    currentRange = range;
+    if (allWeatherRecords.length === 0) return;
+
+    // 記録されている最後のデータ（最新）のエポック秒を基準にする
+    const latestEpoch = allWeatherRecords[allWeatherRecords.length - 1].epoch;
+    let thresholdEpoch = 0;
+
+    if (range === '1d') {
+        thresholdEpoch = latestEpoch - SECONDS_1D;
+    } else if (range === '1w') {
+        thresholdEpoch = latestEpoch - SECONDS_1W;
+    } else if (range === '1m') {
+        thresholdEpoch = latestEpoch - SECONDS_1M;
+    } else {
+        thresholdEpoch = 0; // 全期間
+    }
+
+    // 該当期間内のデータを抽出
+    const filtered = allWeatherRecords.filter(r => r.epoch >= thresholdEpoch);
+
+    // ラベルとデータ配列の構築
+    const labels = [];
+    const temps = [];
+    const hums = [];
+    const pressures = [];
+
+    filtered.forEach(r => {
+        const date = new Date(r.epoch * 1000);
+        let label = "";
+
+        if (range === '1d') {
+            // 1日の場合は時刻のみ「HH:mm」
+            const hh = String(date.getHours()).padStart(2, '0');
+            const mm = String(date.getMinutes()).padStart(2, '0');
+            label = `${hh}:${mm}`;
+        } else {
+            // 1週間以上の場合は日付も付与「MM/DD HH:mm」
+            const m = String(date.getMonth() + 1).padStart(2, '0');
+            const d = String(date.getDate()).padStart(2, '0');
+            const hh = String(date.getHours()).padStart(2, '0');
+            const mm = String(date.getMinutes()).padStart(2, '0');
+            label = `${m}/${d} ${hh}:${mm}`;
+        }
+
+        labels.push(label);
+        temps.push(r.temp);
+        hums.push(r.hum);
+        pressures.push(r.press);
+    });
+
+    // グラフへの反映
+    if (chartTempHum && chartPress) {
+        chartTempHum.data.labels = labels;
+        chartTempHum.data.datasets[0].data = temps;
+        chartTempHum.data.datasets[1].data = hums;
+        chartTempHum.update();
+
+        chartPress.data.labels = labels;
+        chartPress.data.datasets[0].data = pressures;
+        chartPress.update();
+    }
 }
