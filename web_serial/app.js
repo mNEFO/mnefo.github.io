@@ -318,24 +318,6 @@ btnFetchRecords.addEventListener('click', () => {
     appendLog("[送信] 履歴データ取得リクエスト");
 });
 
-// JSON受信処理 (parseReceivedJson 内)
-if (data.type === "weather_record") {
-    // マスター配列にオブジェクトとして蓄積（エポック秒を保持）
-    allWeatherRecords.push({
-        epoch: Number(data.time || data.epoch),
-        temp: data.temp,
-        hum: data.hum,
-        press: data.press
-    });
-} 
-else if (data.type === "weather_record_end") {
-    // 全件届いたら、現在選択されている期間（デフォルトは全期間）でグラフ描画
-    applyChartRange(currentRange);
-
-    appendLog(`[受信] 履歴データ ${data.count} 件を受信完了`);
-    btnFetchRecords.disabled = false;
-    btnFetchRecords.textContent = "履歴データを読み込む";
-}
 
 // USBケーブルが物理的に抜かれた場合の自動処理
 if ("serial" in navigator) {
@@ -461,26 +443,44 @@ function formatEpochToDateTime(epochSec) {
 
 // JSON受信ハンドラ（parseReceivedJson 内に追加）
 function handleWeatherRecords(data) {
+    // if (data.type === "weather_record") {
+    //     // 1件ずつバッファに蓄積
+    //     const timeLabel = formatEpochToDateTime(data.time || data.epoch);
+    //     recordBuffer.labels.push(timeLabel);
+    //     recordBuffer.temps.push(data.temp);
+    //     recordBuffer.hums.push(data.hum);
+    //     recordBuffer.pressures.push(data.press);
+    // }
+    // else if (data.type === "weather_record_end") {
+    //     // 全件受信完了 -> グラフに一括反映して描画
+    //     if (chartTempHum && chartPress) {
+    //         chartTempHum.data.labels = [...recordBuffer.labels];
+    //         chartTempHum.data.datasets[0].data = [...recordBuffer.temps];
+    //         chartTempHum.data.datasets[1].data = [...recordBuffer.hums];
+    //         chartTempHum.update();
+
+    //         chartPress.data.labels = [...recordBuffer.labels];
+    //         chartPress.data.datasets[0].data = [...recordBuffer.pressures];
+    //         chartPress.update();
+    //     }
+
+    //     appendLog(`[受信] 履歴データ ${data.count} 件を受信完了`);
+    //     btnFetchRecords.disabled = false;
+    //     btnFetchRecords.textContent = "履歴データを読み込む";
+    // }
+    // JSON受信処理 (parseReceivedJson 内)
     if (data.type === "weather_record") {
-        // 1件ずつバッファに蓄積
-        const timeLabel = formatEpochToDateTime(data.time || data.epoch);
-        recordBuffer.labels.push(timeLabel);
-        recordBuffer.temps.push(data.temp);
-        recordBuffer.hums.push(data.hum);
-        recordBuffer.pressures.push(data.press);
+        // マスター配列にオブジェクトとして蓄積（エポック秒を保持）
+        allWeatherRecords.push({
+            epoch: Number(data.time || data.epoch),
+            temp: data.temp,
+            hum: data.hum,
+            press: data.press
+        });
     }
     else if (data.type === "weather_record_end") {
-        // 全件受信完了 -> グラフに一括反映して描画
-        if (chartTempHum && chartPress) {
-            chartTempHum.data.labels = [...recordBuffer.labels];
-            chartTempHum.data.datasets[0].data = [...recordBuffer.temps];
-            chartTempHum.data.datasets[1].data = [...recordBuffer.hums];
-            chartTempHum.update();
-
-            chartPress.data.labels = [...recordBuffer.labels];
-            chartPress.data.datasets[0].data = [...recordBuffer.pressures];
-            chartPress.update();
-        }
+        // 全件届いたら、現在選択されている期間（デフォルトは全期間）でグラフ描画
+        applyChartRange(currentRange);
 
         appendLog(`[受信] 履歴データ ${data.count} 件を受信完了`);
         btnFetchRecords.disabled = false;
