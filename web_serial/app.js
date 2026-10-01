@@ -14,6 +14,10 @@ let currentRange = 'all';
 const SECONDS_1D = 86400;
 const SECONDS_1W = 86400 * 7;
 const SECONDS_1M = 86400 * 30;
+// Raspberry PiのUSBベンダーID（VID）は "0x2E8A"
+const filters = [
+  { usbVendorId: 0x2E8A } // Raspberry Pi Ltd
+];
 
 // ==========================================
 // DOM要素の取得
@@ -395,7 +399,8 @@ async function connectSerial() {
 
     try {
         // ポート選択ダイアログの表示
-        port = await navigator.serial.requestPort();
+        // port = await navigator.serial.requestPort();
+        port = await navigator.serial.requestPort({ filters });
         // USB CDC通信を開く (ボーレートは通常何でもOK)
         await port.open({ baudRate: 115200 });
 
