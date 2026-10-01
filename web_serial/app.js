@@ -392,7 +392,8 @@ if ("serial" in navigator) {
 
 // シリアルポート接続関数
 async function connectSerial() {
-    if (!("serial" in navigator)) {
+    // if (!("serial" in navigator)) {
+    if (!("serial" in navigator) && !window.AndroidSerial && !window.serial) {
         alert("お使いのブラウザはWeb Serial APIに対応していません。ChromeまたはEdgeをご使用ください。");
         return;
     }
