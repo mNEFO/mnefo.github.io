@@ -703,6 +703,7 @@ function setConnectedState(connected) {
     if (inputScheduleTime) inputScheduleTime.disabled = !connected;
     if (btnSetSchedule) btnSetSchedule.disabled = !connected;
     if (btnSetDefault) btnSetDefault.disabled = !connected;
+    if (btnClearWeatherData) btnClearWeatherData.disabled = !connected;
     if (btnSetDm) btnSetDm.disabled = !connected;
     if (inputCustomVal) inputCustomVal.disabled = !connected;
     if (btnSetCustomVal) btnSetCustomVal.disabled = !connected;
