@@ -50,6 +50,7 @@ const btnSetTimezone = document.getElementById('btn-set-timezone');
 const inputScheduleTime = document.getElementById('input-schedule-time');
 const btnSetSchedule = document.getElementById('btn-set-schedule');
 const btnSetDefault = document.getElementById('btn-set-default');
+const btnClearWeatherData = document.getElementById('btn-clear-weather-data');
 const btnSetDm = document.getElementById('btn-set-dm');
 const inputCustomVal = document.getElementById('input-custom-val');
 const btnSetCustomVal = document.getElementById('btn-set-custom-val');
@@ -230,6 +231,13 @@ btnSetDefault.addEventListener('click', () => {
         cmd: "SET_DEFAULT"
     });
     appendLog(`[送信] デフォルト設定を適用`);
+});
+
+btnClearWeatherData.addEventListener('click', () => {
+    sendJsonCommand({
+        cmd: "CLEAR_WEATHER_DATA"
+    });
+    appendLog(`[送信] 気象データを消去`);
 });
 
 btnSetDm.addEventListener('click', () => {
