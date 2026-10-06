@@ -16,7 +16,7 @@ const SECONDS_1W = 86400 * 7;
 const SECONDS_1M = 86400 * 30;
 // Raspberry PiのUSBベンダーID（VID）は "0x2E8A"
 const filters = [
-  { usbVendorId: 0x2E8A } // Raspberry Pi Ltd
+    { usbVendorId: 0x2E8A } // Raspberry Pi Ltd
 ];
 
 // ==========================================
@@ -570,13 +570,17 @@ function parseReceivedJson(jsonString) {
                 if (data.pico_temp) {
                     valBoardTemp.textContent = data.pico_temp.toFixed(1);
                 }
-                if (data.tuptime) {
-                    const years = Math.floor(data.tuptime / 31536000);
-                    const months = Math.floor((data.tuptime % 31536000) / 2592000);
-                    const days = Math.floor(data.tuptime / 86400);
-                    const hours = Math.floor((data.tuptime % 86400) / 3600);
-                    const minutes = Math.floor((data.tuptime % 3600) / 60);
-                    const seconds = data.tuptime % 60;
+                if (data.tuptime !== undefined) {
+                    // 基準エポック（1970-01-01 00:00:00 UTC）からの経過日時を取得
+                    const d = new Date(data.tuptime * 1000);
+
+                    const years = d.getUTCFullYear() - 1970;
+                    const months = d.getUTCMonth();        // 0〜11
+                    const days = d.getUTCDate() - 1;     // 1日は0日経過とみなす
+                    const hours = d.getUTCHours();
+                    const minutes = d.getUTCMinutes();
+                    const seconds = d.getUTCSeconds();
+
                     valUptime.textContent = `${years}年${months}ヶ月${days}日${hours}時間${minutes}分${seconds}秒`;
                 }
                 if (data.tz) {
