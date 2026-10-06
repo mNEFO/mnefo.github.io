@@ -571,25 +571,15 @@ function parseReceivedJson(jsonString) {
                     valBoardTemp.textContent = data.pico_temp.toFixed(1);
                 }
                 if (data.tuptime !== undefined) {
-                    let sec = Number(data.tuptime);
+                    // 基準エポック（1970-01-01 00:00:00 UTC）からの経過日時を取得
+                    const d = new Date(data.tuptime * 1000);
 
-                    // 下位の単位（秒・分・時間）から順に確定
-                    const seconds = sec % 60;
-                    sec = Math.floor(sec / 60);
-
-                    const minutes = sec % 60;
-                    sec = Math.floor(sec / 60);
-
-                    const hours = sec % 24;
-                    sec = Math.floor(sec / 24); // ここで sec は「通算日数」
-
-                    // 通算日数を 年・月・日に分解 (1年=365日, 1ヶ月=30日換算)
-                    const years = Math.floor(sec / 365);
-                    sec %= 365;
-
-                    // 360〜364日で12ヶ月になるのを防ぐため Math.min(11, ...) で頭打ちにする
-                    const months = Math.min(11, Math.floor(sec / 30));
-                    const days = sec - (months * 30);
+                    const years = d.getUTCFullYear() - 1970;
+                    const months = d.getUTCMonth();        // 0〜11
+                    const days = d.getUTCDate() - 1;     // 1日は0日経過とみなす
+                    const hours = d.getUTCHours();
+                    const minutes = d.getUTCMinutes();
+                    const seconds = d.getUTCSeconds();
 
                     valUptime.textContent = `${years}年${months}ヶ月${days}日${hours}時間${minutes}分${seconds}秒`;
                 }
