@@ -97,8 +97,26 @@ btnSetMode.addEventListener('click', () => {
     appendLog(`[送信] 表示モード設定: ${selectedMode}`);
 });
 
+selectMode.addEventListener('change', () => {
+    const selectedMode = selectMode.value;
+    sendJsonCommand({
+        cmd: "SET_MODE",
+        mode: selectedMode
+    });
+    appendLog(`[送信] 表示モード設定: ${selectedMode}`);
+});
+
 // dot mode変更ボタン
 btnSetDotMode.addEventListener('click', () => {
+    const selectedMode = selectDotMode.value;
+    sendJsonCommand({
+        cmd: "SET_DOT_MODE",
+        mode: selectedMode
+    });
+    appendLog(`[送信] ドットモード設定: ${selectedMode}`);
+});
+
+selectDotMode.addEventListener('change', () => {
     const selectedMode = selectDotMode.value;
     sendJsonCommand({
         cmd: "SET_DOT_MODE",
@@ -213,6 +231,15 @@ btnSetTimezone.addEventListener('click', () => {
     appendLog(`[送信] タイムゾーン設定: UTC${tzOffset >= 0 ? '+' : ''}${tzOffset}`);
 });
 
+selectTimezone.addEventListener('change', () => {
+    const tzOffset = parseInt(selectTimezone.value, 10);
+    sendJsonCommand({
+        cmd: "SET_TZ",
+        offset: tzOffset
+    });
+    appendLog(`[送信] タイムゾーン設定: UTC${tzOffset >= 0 ? '+' : ''}${tzOffset}`);
+});
+
 btnSetSchedule.addEventListener('click', () => {
     const timeVal = inputScheduleTime.value; // "HH:MM" 形式 (例: "03:00")
     if (!timeVal) return;
@@ -231,6 +258,9 @@ btnSetSchedule.addEventListener('click', () => {
 });
 
 btnSetDefault.addEventListener('click', () => {
+    const confirmReset = confirm("本当にデフォルト設定に戻しますか？\n※ この操作は元に戻せません。");
+    if (!confirmReset) return;
+
     sendJsonCommand({
         cmd: "SET_DEFAULT"
     });
@@ -238,6 +268,9 @@ btnSetDefault.addEventListener('click', () => {
 });
 
 btnClearWeatherData.addEventListener('click', () => {
+    const confirmClear = confirm("本当に気象データを消去しますか？\n※ この操作は元に戻せません。");
+    if (!confirmClear) return;
+
     sendJsonCommand({
         cmd: "CLEAR_WEATHER_DATA"
     });
