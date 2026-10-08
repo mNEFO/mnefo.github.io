@@ -59,6 +59,7 @@ const btnSetDm = document.getElementById('btn-set-dm');
 const inputCustomVal = document.getElementById('input-custom-val');
 const btnSetCustomVal = document.getElementById('btn-set-custom-val');
 const btnSendManualDisplay = document.getElementById('btn-send-manual-display');
+const btnFetchManualDisplay = document.getElementById('btn-fetch-manual-display');
 const btnFetchRecords = document.getElementById('btn-fetch-records');
 const btnExportCsv = document.getElementById('btn-export-csv');
 window.addEventListener('DOMContentLoaded', initCharts);
@@ -332,6 +333,13 @@ btnSendManualDisplay.addEventListener('click', () => {
     });
 
     appendLog(`[送信] 任意表示: [${digits.join(',')}]`);
+});
+
+btnFetchManualDisplay.addEventListener('click', () => {
+    sendJsonCommand({
+        cmd: "FETCH_MANUAL_DISP"
+    });
+    appendLog(`[送信] 任意表示データを取得`);
 });
 
 document.querySelectorAll('.btn-range').forEach(btn => {
@@ -674,6 +682,35 @@ function parseReceivedJson(jsonString) {
             case "response":
                 // 送信コマンドへの応答結果
                 appendLog(`[応答] CMD:${data.cmd} Status:${data.status}`);
+                break;
+
+            case "photo_digits":
+                if (data.photo_digits) {
+                    const tubeUnits = document.querySelectorAll('.tube-unit');
+                    tubeUnits.forEach((unit, index) => {
+                        const valInput = unit.querySelector('.tube-val');
+
+                        if (data.photo_digits[index] !== undefined) {
+                            valInput.value = data.photo_digits[index];
+                        }
+                    });
+                }
+                break;
+
+            case "photo_dots":
+                if (data.photo_dots) {
+                    const tubeUnits = document.querySelectorAll('.tube-unit');
+                    tubeUnits.forEach((unit, index) => {
+                        const dotL = unit.querySelector('.dot-l');
+                        const dotR = unit.querySelector('.dot-r');
+
+                        if (data.photo_dots[index] !== undefined) {
+                            const dotMask = data.photo_dots[index];
+                            dotL.checked = (dotMask & 1) !== 0;
+                            dotR.checked = (dotMask & 2) !== 0;
+                        }
+                    });
+                }
                 break;
 
             default:
