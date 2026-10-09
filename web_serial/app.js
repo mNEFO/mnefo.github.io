@@ -684,35 +684,6 @@ function parseReceivedJson(jsonString) {
                 appendLog(`[応答] CMD:${data.cmd} Status:${data.status}`);
                 break;
 
-            case "photo_digits":
-                if (data.photo_digits) {
-                    const tubeUnits = document.querySelectorAll('.tube-unit');
-                    tubeUnits.forEach((unit, index) => {
-                        const valInput = unit.querySelector('.tube-val');
-
-                        if (data.photo_digits[index] !== undefined) {
-                            valInput.value = data.photo_digits[index];
-                        }
-                    });
-                }
-                break;
-
-            case "photo_dots":
-                if (data.photo_dots) {
-                    const tubeUnits = document.querySelectorAll('.tube-unit');
-                    tubeUnits.forEach((unit, index) => {
-                        const dotL = unit.querySelector('.dot-l');
-                        const dotR = unit.querySelector('.dot-r');
-
-                        if (data.photo_dots[index] !== undefined) {
-                            const dotMask = data.photo_dots[index];
-                            dotL.checked = (dotMask & 1) !== 0;
-                            dotR.checked = (dotMask & 2) !== 0;
-                        }
-                    });
-                }
-                break;
-
             default:
                 console.log("未定義のデータタイプ:", data);
         }
@@ -805,6 +776,7 @@ function setConnectedState(connected) {
     }
 
     updateManualDisplayControls(connected);
+    if (btnFetchManualDisplay) btnFetchManualDisplay.disabled = !connected;
 }
 
 // コンソール領域へのログ出力追記
@@ -838,8 +810,8 @@ function resetUiToDefault() {
         if (valBrightnessDisp) valBrightnessDisp.textContent = "60";
     }
     if (rangeSensorTH) {
-        rangeSensorTH.value = 6;
-        if (valSensorTHDisp) valSensorTHDisp.textContent = "6";
+        rangeSensorTH.value = 10;
+        if (valSensorTHDisp) valSensorTHDisp.textContent = "10";
     }
     if (selectDotMode) selectDotMode.value = "right";
     if (inputScheduleTime) inputScheduleTime.value = "03:00";
