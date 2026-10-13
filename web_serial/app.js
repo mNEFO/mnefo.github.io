@@ -806,8 +806,8 @@ function resetUiToDefault() {
     if (selectMode) selectMode.value = "clock";
     if (selectTimezone) selectTimezone.value = "9";
     if (rangeBrightness) {
-        rangeBrightness.value = 80;
-        if (valBrightnessDisp) valBrightnessDisp.textContent = "80";
+        rangeBrightness.value = 100;
+        if (valBrightnessDisp) valBrightnessDisp.textContent = "100";
     }
     if (rangeSensorTH) {
         rangeSensorTH.value = 10;
