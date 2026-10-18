@@ -682,6 +682,10 @@ function parseReceivedJson(jsonString) {
             case "response":
                 // 送信コマンドへの応答結果
                 appendLog(`[応答] CMD:${data.cmd} Status:${data.status}`);
+                if (data.status === 'error') {
+                    btnFetchRecords.disabled = false;
+                    btnFetchRecords.textContent = "履歴データを読み込む";
+                }
                 break;
 
             default:
