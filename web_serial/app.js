@@ -827,7 +827,7 @@ function resetUiToDefault() {
     if (valBoardId) valBoardId.textContent = "----------------";
     if (valBoardTemp) valBoardTemp.textContent = "--.-"
     if (valStorage) valStorage.textContent = "-- %";
-    if (valRTCDiff) valRTCDiff.textContent = "--- μs";
+    if (valRTCDiff) valRTCDiff.textContent = "---";
 
     // コントロール類の値を初期値に戻したい場合（任意）
     if (selectMode) selectMode.value = "clock";
