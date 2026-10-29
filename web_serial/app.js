@@ -43,6 +43,7 @@ const valBoardId = document.getElementById('val-board-id');
 const valBoardTemp = document.getElementById('val-board-temp');
 const valUptime = document.getElementById('val-uptime');
 const valStorage = document.getElementById('val-storage');
+const valRTCDiff = document.getElementById('val-rtc-diff');
 const toggleGps = document.getElementById('toggle-gps');
 const toggleSensor = document.getElementById('toggle-sensor');
 const toggleDark = document.getElementById('toggle-dark');
@@ -623,6 +624,9 @@ function parseReceivedJson(jsonString) {
                 if (data.pico_temp) {
                     valBoardTemp.textContent = data.pico_temp.toFixed(1);
                 }
+                if (data.rtc_diff) {
+                    valRTCDiff.textContent = data.rtc_diff;
+                }
                 if (data.tuptime !== undefined) {
                     // 基準エポック（1970-01-01 00:00:00 UTC）からの経過日時を取得
                     const d = new Date(data.tuptime * 1000);
@@ -823,6 +827,7 @@ function resetUiToDefault() {
     if (valBoardId) valBoardId.textContent = "----------------";
     if (valBoardTemp) valBoardTemp.textContent = "--.-"
     if (valStorage) valStorage.textContent = "-- %";
+    if (valRTCDiff) valRTCDiff.textContent = "--- μs";
 
     // コントロール類の値を初期値に戻したい場合（任意）
     if (selectMode) selectMode.value = "clock";
