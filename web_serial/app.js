@@ -51,7 +51,7 @@ const toggleXfade = document.getElementById('toggle-xfade');
 const toggleRotate = document.getElementById('toggle-rotate');
 const toggleAP = document.getElementById('toggle-ap');
 const toggleDotPWM = document.getElementById('toggle-dot-pwm');
-const toggle12h = document.getElementById('toggle-12h');
+const toggleAMPM = document.getElementById('toggle-ampm');
 const toggleZeroBlank = document.getElementById('toggle-zero-blank');
 const selectTimezone = document.getElementById('select-timezone');
 const btnSetTimezone = document.getElementById('btn-set-timezone');
@@ -238,11 +238,11 @@ toggleDotPWM.addEventListener('change', () => {
     appendLog(`[送信] ドットPWM: ${isEnabled ? "ON" : "OFF"}`);
 });
 
-toggle12h.addEventListener('change', () => {
-    const isEnabled = toggle12h.checked;
+toggleAMPM.addEventListener('change', () => {
+    const isEnabled = toggleAMPM.checked;
 
     sendJsonCommand({
-        cmd: "SET_12H",
+        cmd: "SET_AMPM",
         enabled: isEnabled
     });
 
@@ -714,7 +714,7 @@ function parseReceivedJson(jsonString) {
                     toggleRotate.checked = data.features.rotate;
                     toggleAP.checked = data.features.ap;
                     toggleDotPWM.checked = data.features.dot_pwm;
-                    toggle12h.checked = data.features.ampm;
+                    toggleAMPM.checked = data.features.ampm;
                     toggleZeroBlank.checked = data.features.zero_blank;
                 }
                 break;
@@ -808,9 +808,9 @@ function setConnectedState(connected) {
         toggleZeroBlank.disabled = !connected;
     }
 
-    const toggle12h = document.getElementById('toggle-12h');
-    if (toggle12h) {
-        toggle12h.disabled = !connected;
+    const toggleAMPM = document.getElementById('toggle-ampm');
+    if (toggleAMPM) {
+        toggleAMPM.disabled = !connected;
     }
 
     if (selectTimezone) selectTimezone.disabled = !connected;
@@ -897,8 +897,8 @@ function resetUiToDefault() {
     if (toggleDotPWM) toggleDotPWM.checked = false;
     const toggleZeroBlank = document.getElementById('toggle-zero-blank');
     if (toggleZeroBlank) toggleZeroBlank.checked = false;
-    const toggle12h = document.getElementById('toggle-12h');
-    if (toggle12h) toggle12h.checked = false;
+    const toggleAMPM = document.getElementById('toggle-ampm');
+    if (toggleAMPM) toggleAMPM.checked = false;
     if (valUptime) valUptime.textContent = "--年--ヶ月--日--時間--分--秒";
 
     // ... 既存のリセット処理 ...
