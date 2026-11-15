@@ -53,6 +53,7 @@ const toggleAP = document.getElementById('toggle-ap');
 const toggleDotPWM = document.getElementById('toggle-dot-pwm');
 const toggleAMPM = document.getElementById('toggle-ampm');
 const toggleZeroBlank = document.getElementById('toggle-zero-blank');
+const toggleTwelve = document.getElementById('toggle-twelve');
 const selectTimezone = document.getElementById('select-timezone');
 const btnSetTimezone = document.getElementById('btn-set-timezone');
 const inputScheduleTime = document.getElementById('input-schedule-time');
@@ -261,6 +262,16 @@ toggleZeroBlank.addEventListener('change', () => {
     appendLog(`[送信] ゼロブランク: ${isEnabled ? "ON" : "OFF"}`);
 });
 
+toggleTwelve.addEventListener('change', () => {
+    const isEnabled = toggleTwelve.checked;
+
+    sendJsonCommand({
+        cmd: "SET_TWELVE",
+        enabled: isEnabled
+    });
+
+    appendLog(`[送信] 0時↔12時: ${isEnabled ? "ON" : "OFF"}`);
+});
 
 btnSetTimezone.addEventListener('click', () => {
     const tzOffset = parseInt(selectTimezone.value, 10);
@@ -716,6 +727,7 @@ function parseReceivedJson(jsonString) {
                     toggleDotPWM.checked = data.features.dot_pwm;
                     toggleAMPM.checked = data.features.ampm;
                     toggleZeroBlank.checked = data.features.zero_blank;
+                    toggleTwelve.checked = data.features.twelve;
                 }
                 break;
 
@@ -808,6 +820,11 @@ function setConnectedState(connected) {
         toggleZeroBlank.disabled = !connected;
     }
 
+    const toggleTwelve = document.getElementById('toggle-twelve');
+    if (toggleTwelve) {
+        toggleTwelve.disabled = !connected;
+    }
+
     const toggleAMPM = document.getElementById('toggle-ampm');
     if (toggleAMPM) {
         toggleAMPM.disabled = !connected;
@@ -897,6 +914,8 @@ function resetUiToDefault() {
     if (toggleDotPWM) toggleDotPWM.checked = false;
     const toggleZeroBlank = document.getElementById('toggle-zero-blank');
     if (toggleZeroBlank) toggleZeroBlank.checked = false;
+    const toggleTwelve = document.getElementById('toggle-twelve');
+    if (toggleTwelve) toggleTwelve.checked = false;
     const toggleAMPM = document.getElementById('toggle-ampm');
     if (toggleAMPM) toggleAMPM.checked = false;
     if (valUptime) valUptime.textContent = "--年--ヶ月--日--時間--分--秒";
